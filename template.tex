@@ -8,8 +8,10 @@
 %%% for the commands and parameters found in the source document. (The code
 %%% is identical in ``template.tex'' and ``template.annotated.tex.'')
 
-\documentclass[conference]{acmsiggraph}
+\documentclass[review]{acmsiggraph}
 \usepackage{subcaption}
+\usepackage{color}
+
 \TOGonlineid{45678}
 \TOGvolume{0}
 \TOGnumber{0}
@@ -25,6 +27,8 @@
 \pdfauthor{Mark D. Benjamin, Adam Finkelstein, Stephen Diverdi}
 
 \keywords{triangle mesh, painting, vector graphics}
+
+\input{macros}
 
 \begin{document}
 
@@ -443,10 +447,19 @@ areas of the canvas and therefore results in less overlapping geometry. This sit
 in less complex geometry and therefore take less time.
 
 \begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.5\columnwidth}
     \centering
-        \includegraphics[width=0.49\textwidth]{graphs/numtriangles}
-    \caption{The blue graph is the non-zooming case. The red graph is the zooming case.}
+    \includegraphics[width=\columnwidth]{graphs/numtriangles}
     \label{fig:numtriangles}
+  \end{subfigure}%
+  \begin{subfigure}[b]{0.5\columnwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{graphs/cumulativetime}
+    \label{fig:timing}
+  \end{subfigure}%
+  \vspace{-0.4cm}
+  \caption{The blue graph is the non-zooming case. The red graph is the zooming case.}
 \end{figure}
 
 As seen in figure~\ref{fig:numtriangles} the zooming case grows linearly while the non-zooming
@@ -457,13 +470,6 @@ increase in the amount of geometry. This results
 in a quadratic growth rate. However, in the zooming case each stroke rarely overlaps and therefore
 intersection points are rarely added. Instead the geometry increases by a constant which leads to
 a linear growth rate.
-
-\begin{figure}
-    \centering
-        \includegraphics[width=0.49\textwidth]{graphs/cumulativetime}
-    \caption{The blue graph is the non-zooming case. The red graph is the zooming case.}
-    \label{fig:timing}
-\end{figure}
 
 Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to render. Both
 the zooming and non-zooming cases grow non-linearly over time. However, the non-zooming case takes
@@ -543,10 +549,23 @@ without the program slowing to an unusable state.
     \centering
         \includegraphics[width=0.49\textwidth]{images/facezoom}
         \includegraphics[width=0.49\textwidth]{images/facezoomtriangles}
-    \caption{Artist time ~30 minutes. 9030 triangles.}
+    \caption{Artist time ~30 minutes. 9030 triangles. \Steve{Can we add number of strokes?}}
 \end{figure*}
 
-
+\begin{figure*}
+    \centering
+        \includegraphics[width=0.195\textwidth]{images/zoom61}
+        \includegraphics[width=0.195\textwidth]{images/zoom62}
+        \includegraphics[width=0.195\textwidth]{images/zoom63}
+        \includegraphics[width=0.195\textwidth]{images/zoom64}
+        \includegraphics[width=0.195\textwidth]{images/zoom65}
+        \includegraphics[width=0.195\textwidth]{images/zoom66}
+        \includegraphics[width=0.195\textwidth]{images/zoom67}
+        \includegraphics[width=0.195\textwidth]{images/zoom68}
+        \includegraphics[width=0.195\textwidth]{images/zoom69}
+        \includegraphics[width=0.195\textwidth]{images/zoom71}
+    \caption{A painting that shows extreme zoom levels.  The final image is at \Steve{zoom level XXX}.}
+\end{figure*}
 
 \section{Conclusion}
 Vector graphics are useful for representing complex images with limited information
@@ -567,6 +586,8 @@ the underlying triangle mesh structure to make the artists' job easier.
 
 
 \section*{Acknowledgments}
+
+Omitted for review.
 
 \bibliographystyle{acmsiggraph}
 \bibliography{template}

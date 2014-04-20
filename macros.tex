@@ -1,0 +1,105 @@
+%%%%% For comments:
+\newcommand{\ignorethis } [1] {}
+\newcommand{\smallnote  } [1] {{\small \{#1\}}}
+\newcommand{\bignote    } [1] {\begin{quote} \textbf{Note:\ }
+                               \slshape #1 \end{quote}}
+\newcommand{\todo}[1]{\ignorethis{\textcolor{red}{[{\bf TODO}: #1]}}}
+\newcommand{\redund}[1]{#1}
+
+%%%%% For referencing things:
+\newcommand{\chapnum    } [1] {\ref{#1}}
+\newcommand{\appnum     } [1] {\ref{#1}}
+\newcommand{\sectnum    } [1] {\ref{#1}}
+\newcommand{\tblnum     } [1] {\ref{#1}}
+\newcommand{\fignum     } [1] {\ref{#1}}
+\newcommand{\eqnnum     } [1] {\mbox{(\ref{#1})}}
+\newcommand{\chap       } [1] {Chapter~\chapnum{#1}}
+\newcommand{\chaps      } [1] {Chapters~\chapnum{#1}}
+\newcommand{\app        } [1] {Appendix~\appnum{#1}}
+\newcommand{\apps       } [1] {Appendices~\appnum{#1}}
+\newcommand{\sect       } [1] {Section~\sectnum{#1}}
+\newcommand{\sects      } [1] {Sections~\sectnum{#1}}
+\newcommand{\tbl        } [1] {Table~\tblnum{#1}}
+\newcommand{\tbls       } [1] {Tables~\tblnum{#1}}
+\newcommand{\fig        } [1] {Figure~\fignum{#1}}
+\newcommand{\figs       } [1] {Figures~\fignum{#1}}
+\newcommand{\eqn        } [1] {equation~\eqnnum{#1}}
+\newcommand{\eqns       } [1] {equations~\eqnnum{#1}}
+
+%%%%% Latin and language:
+%% \newcommand{\etal       }     {\textit{et~al.}} old; not like ACM style
+\newcommand{\etal       }     {{et~al.}}
+\newcommand{\apriori    }     {\textit{a~priori}}
+\newcommand{\aposteriori}     {\textit{a~posteriori}}
+\newcommand{\perse      }     {\textit{per~se}}
+\newcommand{\cf         }     {\textit{cf.}}
+\newcommand{\eg         }     {{e.g.}}
+\newcommand{\Eg         }     {{E.g.}}
+\newcommand{\ie         }     {{i.e.}}
+\newcommand{\Ie         }     {{I.e.}}
+\newcommand{\vs         }     {{vs.}}
+\newcommand{\naive      }     {{na\"{\i}ve}}
+
+%%%%% Math symbols:
+\newcommand{\Identity   }     {\mat{I}}
+\newcommand{\Zero       }     {\mathbf{0}}
+\newcommand{\Reals      }     {{\textrm{I\kern-0.18em R}}}
+\newcommand{\isdefined  }     {\mbox{\hspace{0.5ex}:=\hspace{0.5ex}}}
+%\newcommand{\implies    }     {\Longrightarrow}
+\newcommand{\texthalf   }     {\ensuremath{\textstyle\frac{1}{2}}}
+\newcommand{\half       }     {\ensuremath{\frac{1}{2}}}
+\newcommand{\third      }     {\ensuremath{\frac{1}{3}}}
+\newcommand{\fourth      }    {\ensuremath{\frac{1}{4}}}
+
+%%%%% Math modifiers:
+\renewcommand{\vec      } [1] {{\text{\boldmath $\mathbit{#1}$}}}
+\newcommand{\mat        } [1] {{\text{\boldmath $\mathbit{#1}$}}}
+\newcommand{\Approx     } [1] {\widetilde{#1}}
+\newcommand{\change     } [1] {\mbox{{\footnotesize $\Delta$} \kern-3pt}#1}
+
+%%%%% Math functions:
+\newcommand{\Order      } [1] {O(#1)}
+\newcommand{\set        } [1] {{\lbrace #1 \rbrace}}
+\newcommand{\floor      } [1] {{\lfloor #1 \rfloor}}
+\newcommand{\ceil       } [1] {{\lceil  #1 \rceil }}
+\newcommand{\inverse    } [1] {{#1}^{-1}}
+\newcommand{\transpose  } [1] {{#1}^\mathrm{T}}
+\newcommand{\invtransp  } [1] {{#1}^{-\mathrm{T}}}
+
+%%%%% Math functions with small (fixed) and large (expandable) forms:
+\newcommand{\abs        } [1] {{| #1 |}}
+\newcommand{\Abs        } [1] {{\left| #1 \right|}}
+\newcommand{\norm       } [1] {{\| #1 \|}}
+\newcommand{\Norm       } [1] {{\left\| #1 \right\|}}
+\newcommand{\pnorm      } [2] {\norm{#1}_{#2}}
+\newcommand{\Pnorm      } [2] {\Norm{#1}_{#2}}
+\newcommand{\inner      } [2] {{\langle {#1} \, | \, {#2} \rangle}}
+\newcommand{\Inner      } [2] {{\left\langle \begin{array}{@{}c|c@{}}
+                               \displaystyle {#1} & \displaystyle {#2}
+                               \end{array} \right\rangle}}
+
+
+%%%%% Paper-specific stuff:
+
+% reduce hyphenation (slay the hyper hyphenator with 2000)
+\pretolerance 800
+
+% These variables are for width and height and gaps in figures:
+% set with something like: \setlength{\h}{1cm}
+\newlength{\w}
+\newlength{\h}
+\newlength{\x}
+
+
+\definecolor{darkred}{rgb}{0.7,0.1,0.1}
+\definecolor{darkgreen}{rgb}{0.1,0.7,0.1}
+\definecolor{cyan}{rgb}{0.7,0.0,0.7}
+\definecolor{dblue}{rgb}{0.2,0.2,0.8}
+\newcommand{\Mark}[1]{\textcolor{red}{{\slshape #1}}}
+\newcommand{\Adam}[1]{\textcolor{darkgreen}{\textbf{Adam:} {\slshape #1}}}
+\newcommand{\Steve}[1]{\textcolor{cyan}{\textbf{Steve:} {\slshape #1}}}
+\newcommand{\note}[1]{\textcolor{darkgreen}{\textbf{Note:} {\slshape #1}}}
+
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
+\newcommand{\mytilde}{\raise.17ex\hbox{$\scriptstyle\sim$}}
