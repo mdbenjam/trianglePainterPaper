@@ -1,0 +1,82 @@
+\begin{thebibliography}{\protect\citename{Berman et~al\mbox{.} }1994}
+
+\bibitem[\protect\citename{Berman et~al\mbox{.}
+  }1994]{Berman:1994:MPC:192161.192181}
+{\sc Berman, D.~F., Bartell, J.~T., and Salesin, D.~H.}
+\newblock 1994.
+\newblock Multiresolution painting and compositing.
+\newblock In {\em Proceedings of the 21st Annual Conference on Computer
+  Graphics and Interactive Techniques}, ACM, New York, NY, USA, SIGGRAPH '94,
+  85--90.
+
+\bibitem[\protect\citename{Bremer et~al\mbox{.} }2001]{Bremer:2001:VCM}
+{\sc Bremer, P.~T., Porumbescu, S.~D., Kuester, F., Joy, K., and Hamann, B.}
+\newblock 2001.
+\newblock Virtual clay modeling using adaptive distance fields.
+\newblock In {\em Proceedings of the 2001 UC Davis Student Workshop on
+  Computing, TR CSE-2001-7}, University of California, Davis, California,
+  Davis, D.~Keen, Ed.
+
+\bibitem[\protect\citename{Carr and Hart }2004]{Carr:2004:PD:1186562.1015809}
+{\sc Carr, N.~A., and Hart, J.~C.}
+\newblock 2004.
+\newblock Painting detail.
+\newblock In {\em ACM SIGGRAPH 2004 Papers}, ACM, New York, NY, USA, SIGGRAPH
+  '04, 845--852.
+
+\bibitem[\protect\citename{Frisken et~al\mbox{.}
+  }2000]{Frisken:2000:ASD:344779.344899}
+{\sc Frisken, S.~F., Perry, R.~N., Rockwood, A.~P., and Jones, T.~R.}
+\newblock 2000.
+\newblock Adaptively sampled distance fields: A general representation of shape
+  for computer graphics.
+\newblock In {\em Proceedings of the 27th Annual Conference on Computer
+  Graphics and Interactive Techniques}, ACM Press/Addison-Wesley Publishing
+  Co., New York, NY, USA, SIGGRAPH '00, 249--254.
+
+\bibitem[\protect\citename{Lai et~al\mbox{.}
+  }2009]{Lai:2009:ATG:1531326.1531391}
+{\sc Lai, Y.-K., Hu, S.-M., and Martin, R.~R.}
+\newblock 2009.
+\newblock Automatic and topology-preserving gradient mesh generation for image
+  vectorization.
+\newblock {\em ACM Trans. Graph. 28}, 3 (July), 85:1--85:8.
+
+\bibitem[\protect\citename{Lecot and Lévy }2006]{lecot:ARD:2006}
+{\sc Lecot, G., and Lévy, B.}
+\newblock 2006.
+\newblock Ardeco: Automatic region detection and conversion.
+\newblock In {\em Eurographics Symposium on Rendering}.
+
+\bibitem[\protect\citename{Liao et~al\mbox{.} }2012]{10.1109/TVCG.2012.76}
+{\sc Liao, Z., Hoppe, H., Forsyth, D., and Yu, Y.}
+\newblock 2012.
+\newblock A subdivision-based representation for vector image editing.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics 18},
+  11, 1858--1867.
+
+\bibitem[\protect\citename{McCann and Pollard
+  }2008]{McCann:2008:RGP:1360612.1360692}
+{\sc McCann, J., and Pollard, N.~S.}
+\newblock 2008.
+\newblock Real-time gradient-domain painting.
+\newblock {\em ACM Trans. Graph. 27}, 3 (Aug.), 93:1--93:7.
+
+\bibitem[\protect\citename{Orzan et~al\mbox{.}
+  }2008]{Orzan:2008:DCV:1360612.1360691}
+{\sc Orzan, A., Bousseau, A., Winnem\"{o}ller, H., Barla, P., Thollot, J., and
+  Salesin, D.}
+\newblock 2008.
+\newblock Diffusion curves: A vector representation for smooth-shaded images.
+\newblock {\em ACM Trans. Graph. 27}, 3 (Aug.), 92:1--92:8.
+
+\bibitem[\protect\citename{Perlin and Velho
+  }1995]{Perlin:1995:LPP:218380.218437}
+{\sc Perlin, K., and Velho, L.}
+\newblock 1995.
+\newblock Live paint: Painting with procedural multiscale textures.
+\newblock In {\em Proceedings of the 22Nd Annual Conference on Computer
+  Graphics and Interactive Techniques}, ACM, New York, NY, USA, SIGGRAPH '95,
+  153--160.
+
+\end{thebibliography}
