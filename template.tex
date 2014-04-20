@@ -73,7 +73,7 @@ However, traditional computer painting programs take inputs of the same type as 
 For example, programs like Adobe Photoshop and GIMP
 allow a user to paint how he would on a physical medium. By letting the mouse act as
 a brush, a user may color individual pixels on the screen. By contrast, programs like 
-Illustrator and Inkscape let a user paint
+Adobe Illustrator and Inkscape let a user paint
 using geometric primitives such as lines and B\'{e}zier curves. The program then stores
 these geometric primitives in order to render the drawing. Although using vector graphics
 is likely less intuitive, it has some distinct advantages including a compact
@@ -91,18 +91,18 @@ strokes akin to the process in a raster graphics program. Upon mouse-up the stro
 converted to our underlying triangle mesh representation. In this way a user may paint using
 vector graphics without worrying about the representation.
 
-Furthermore, this representation allows painting at any scale. A user can make large strokes
+This representation allows painting at any scale. A user can make large strokes
 while zoomed out and then zoom in to make fine details. All of this can happen without
-loss of quality since the data is stored using triangles, not in pixels.
+loss of quality since the data is stored using triangles instead of pixels, which can represent sharp boundaries at any orientation.  Furthermore, the use of smooth shading when rendering the triangles allows for vector representation of gradient effects.  We take advantage of this feature to create soft, airbrush-like strokes, which are usually very difficult to create in vector drawing software.
 
-To transform a user's mouse inputs to a triangle mesh
+To transform a user's mouse inputs to a triangle mesh,
 TrianglePainter uses a combination of rasterization and marching squares to
 find stroke contours. From the contour it performs a Delaunay triangulation
 and then merges this triangulation
 of the new stroke with the triangle mesh of the existing canvas. This process yields
 a new canvas with the combined strokes.
 
-TrianglePainter reduces the barrier to creating vector graphics. This in turn allows 
+TrianglePainter reduces the barrier to creating vector graphics by enabling a painting-like interface, with support for sharp and smooth edges. This in turn allows 
 artists to focus on the painting and not the way in which they paint, while still 
 getting the benefits of vector graphics.
 
@@ -123,7 +123,7 @@ A quadtree accompanies the distance function to specify where higher sampling ra
 further describes how ADFs can be created and used. However, it is unclear how ADFs might be used in a general
 painting program where strokes with solid colors and gradients are composited on top of one another.
 
-There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry.  \cite{ando2010} also used a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.
+There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry.  \cite{ando2010} also used a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.  Finally, \cite{asente2013} implemented a feature in Adobe Illustrator to create contour gradients from shapes, which fill the shapes with small patches of linear gradients to create a bevel-like effect.  Contour gradients can be used to control opacity to create soft strokes, but each stroke must be stored as a separate (aggregate) object rather than a single flattened canvas representation.
 
 Another series of works have created entirely new ways of painting. Diffusion curves as specified in \cite{Orzan:2008:DCV:1360612.1360691}
 describe a new painting technique where the artists specify edges and colors for those edges. Their system
