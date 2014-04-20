@@ -23,7 +23,7 @@
 
 \title{A Triangle Mesh Approach to Painting}
 
-\author{Mark D. Benjamin\thanks{e-mail:mdbenjam@princeton.edu} \hspace{10 pt} Princeton Unviersity\\ Adam Finkelstein\thanks{e-mail:af@cs.princeton.edu} \hspace{10 pt} Princeton University\\ Stephen Diverdi\thanks{e-mail:diverdi@google.com} \hspace{10 pt} Google}
+\author{Mark D. Benjamin\thanks{e-mail:mdbenjam@princeton.edu} \hspace{10 pt} Princeton Unviersity\\ Adam Finkelstein\thanks{e-mail:af@cs.princeton.edu} \hspace{10 pt} Princeton University\\ Stephen DiVerdi\thanks{e-mail:diverdi@google.com} \hspace{10 pt} Google}
 \pdfauthor{Mark D. Benjamin, Adam Finkelstein, Stephen Diverdi}
 
 \keywords{triangle mesh, painting, vector graphics}
@@ -70,7 +70,7 @@ TrianglePainter lets artists focus on the art, while it handles the vectorizatio
 
 All computer painting programs must store data through rasterization or vectorization. 
 However, traditional computer painting programs take inputs of the same type as the stored data. 
-For example, programs like Photoshop and GIMP
+For example, programs like Adobe Photoshop and GIMP
 allow a user to paint how he would on a physical medium. By letting the mouse act as
 a brush, a user may color individual pixels on the screen. By contrast, programs like 
 Illustrator and Inkscape let a user paint
@@ -80,7 +80,7 @@ is likely less intuitive, it has some distinct advantages including a compact
 representation, infinite resolution, and easier manipulation.
 
 In this paper we introduce TrianglePainter which  
-uses a slightly different representation than traditional raster or vector graphics.
+uses a different representation than traditional raster or vector graphics.
 TrianglePainter uses a triangle mesh to store the data of the painting.
 Since triangles are a geometric primitive used in vector graphics this approach achieves the
 same advantages traditional vector graphics have. However, the representation allows the
@@ -123,6 +123,8 @@ A quadtree accompanies the distance function to specify where higher sampling ra
 further describes how ADFs can be created and used. However, it is unclear how ADFs might be used in a general
 painting program where strokes with solid colors and gradients are composited on top of one another.
 
+There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry.  \cite{ando2010} also used a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.
+
 Another series of works have created entirely new ways of painting. Diffusion curves as specified in \cite{Orzan:2008:DCV:1360612.1360691}
 describe a new painting technique where the artists specify edges and colors for those edges. Their system
 then solves a Poisson equation to diffuse the colors between boundary conditions specified at the edges.
@@ -139,11 +141,11 @@ zoomed in. The strokes are limited to the resolution they are painted at. \cite{
 also allows the development of multi-resolution images using rasters, and as such suffers from the
 same limitations. Another multi-resolution approach by \cite{Perlin:1995:LPP:218380.218437} uses
 procedural textures to avoid any fundamental limit on resolution. Although useful,
-generating procedural textures is difficult and does not help most artists easily create.
+generating procedural textures can be difficult for artists.
 
 Our work builds on these findings. However, our goal is to enable artists to create vector
 graphics through standard painting techniques without having to deal with the underlying representation.
-We use the triangle mesh structure described in \cite{10.1109/TVCG.2012.76} to build a painting program
+We start from the triangle mesh structure described in \cite{10.1109/TVCG.2012.76} to build a painting program
 where the triangle mesh is created while the artists lays down strokes. 
 
 \section{The Canvas Model}
@@ -459,7 +461,7 @@ in less complex geometry and therefore take less time.
     \label{fig:timing}
   \end{subfigure}%
   \vspace{-0.4cm}
-  \caption{The blue graph is the non-zooming case. The red graph is the zooming case.}
+  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative render time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
 \end{figure}
 
 As seen in figure~\ref{fig:numtriangles} the zooming case grows linearly while the non-zooming
