@@ -9,8 +9,13 @@
 %%% is identical in ``template.tex'' and ``template.annotated.tex.'')
 
 \documentclass[review]{acmsiggraph}
+
 \usepackage{subcaption}
 \usepackage{color}
+
+% Reduce the space between subfigures and subfigure captions.
+\captionsetup[subfigure]{aboveskip=6pt}
+\captionsetup[subfigure]{belowskip=0pt}
 
 \TOGonlineid{45678}
 \TOGvolume{0}
@@ -51,8 +56,8 @@ TrianglePainter lets artists focus on the art, while it handles the vectorizatio
 \end{abstract}
 
 \begin{CRcatlist}
-  %\CRcat{I.3.3}{Computer Graphics}{Three-Dimensional Graphics and Realism}{Display Algorithms}
-  %\CRcat{I.3.7}{Computer Graphics}{Three-Dimensional Graphics and Realism}{Radiosity};
+  \CRcat{I.3.4}{Computer Graphics}{Graphics Utilities}{Paint systems}
+  \CRcat{I.3.6}{Computer Graphics}{Methodology and Techniques}{Graphics data structures and data types}
 \end{CRcatlist}
 
 \keywordlist
@@ -236,8 +241,8 @@ figure-eight, will have more than one contour.
 Converting a user's mouse motion into a set of contours requires two steps.
 First, the user's mouse movements are captured by a set of polygons which can be
 rendered to yield a rasterized version of the stroke.
-Second, to obtain the contours the stroke is rasterized in black and marching squares
-is run to extract iso-contours of 50\% gray. This returns a very dense set of points 
+Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{XXX}
+is used to extract iso-contours of 50\% gray. This returns a very dense set of points 
 which we reduce through a pruning process to
 get a sparse but accurate representation of the contour.
 
@@ -256,7 +261,7 @@ within the boundaries. For example, a concave contour should not contain triangl
 would be outside of the boundary.
 Furthermore, these boundaries will later be crucial when compositing a stroke onto a canvas.
 
-We utilized Jonathan Shewchuk's Triangle library to perform Delaunay triangulations
+We utilized Jonathan Shewchuk's Triangle library~\cite{XXX} to perform constrained Delaunay triangulations
 on the given set of points and boundaries. The library outputs a mesh that
 approximately represents the drawn stroke.
 
@@ -312,8 +317,8 @@ approximately represents the drawn stroke.
 % \includegraphics[height=1.5in]{images/triangulationprocess}
 
 \subsection{Soft Strokes}
-The above procedure converts a hard brush into a triangle mesh. Yet, a somewhat more interesting
-case is converting a soft brush with linear gradient into a triangle mesh. A soft stroke has two
+The above procedure converts a hard brush stroke into a triangle mesh. A more interesting
+case is converting a soft brush stroke with linear gradient into a triangle mesh. A soft stroke has two
 components, an inner hard stroke and an outer gradient stroke. Since the triangles in the inner and
 outer parts of the stroke must be colored differently, none of the triangles may cross the boundary
 between the hard and soft regions.
@@ -325,11 +330,11 @@ is rendered in black. This means the boundary of the outer stroke is the 25\% gr
 boundary of the inner stroke is the 75\% gray iso-contour.
 
 Again, using marching squares these contours are extracted and then pruned. The boundaries and points
-derived from the contours are fed into Triangle and a mesh is returned. This mesh represents the soft
-stroke where no triangle crosses the boundary between the soft and hard parts
-of the stroke. Points on the contour of the inner stroke will have color arcs with the stroke color
+derived from the contours are given to Triangle and a mesh is returned. This mesh represents the soft
+stroke where no triangle crosses the boundary between the soft and hard regions
+of the stroke. Points on the contour of the inner stroke will have color arcs with the stroke color,
 while the points on the contour of the outer stroke will have transparent color arcs. This gives
-all triangles connecting the inner and outer strokes a linear gradient.
+all triangles connecting the inner and outer strokes a linear gradient (see Figure~\ref{XXX}).
 
 \begin{figure}
     \centering
@@ -349,15 +354,15 @@ as a technique to reduce the number of triangles that are retriangulated on the 
 
 \subsection{Adding Points to the Canvas}
 
-Every canvas begins with a number of points, along the edge of the screen. These
+Every canvas begins with an initial set of points distributed along the edges. These
 points have boundaries connecting them. These points are originally part of a number of triangles which
 divide the canvas.
 
-In the simplest approach the points and boundaries from the new stroke are added
-to the list of points and boundaries already stored. All of this data can be fed into Triangle
+In the simplest approach, the points and boundaries from the new stroke are added
+to the list of points and boundaries already stored on the canvas. All of this data is given to Triangle
 to produce a new mesh. The new mesh contains all of the points of the old and new strokes. Since
-all of the boundaries are stored and fed into Triangle the stroke edges are preserved. This means that
-no triangle can cross the boundary of a stroke. Without this constraint it would be impossible to color the
+all of the boundaries are stored and given to Triangle, the stroke edges are preserved. This means that
+no triangle can cross the boundary of a stroke. Without this constraint, it would be impossible to correctly color the
 triangles since they would straddle color arcs. Once a new mesh is formed the color arcs of the 
 new and old points must be computed.
 
@@ -370,14 +375,14 @@ new and old points must be computed.
 
 
 \subsection{Determining Colors}
-The color arcs for new points depend on two values, the color of the stroke and the color
+All color compositing is done with regular RGB alpha blending.  The color arcs for new points depend on two values, the color of the stroke and the color
 of the canvas at that point. The points on a hard stroke will have two color arcs. One
 arc describes the inside of the stroke. The color for this arc is the color of the stroke
 composited over the color of the canvas at that point. The other arc describes the outside
 of the stroke. The color for this arc is just the color of the canvas at that point. The
-points on a soft stroke will have one color arc. The color arc for points on the inner
+points on a soft stroke will each have one color arc. The color arc for points on the inner
 contour is the color of the stroke composited over the color of the canvas at that point.
-The color arc for points on the outer contour is the color of canvas at that point.
+The color arc for points on the outer contour is the color of canvas at that point (because the outer edge of the soft stroke is completely transparent).
 This gives any triangle connecting inside and outside contour points a linear gradient
 from the stroke color composited over the canvas color to the canvas color.
 
@@ -391,16 +396,16 @@ the old point must be determined through bilinear interpolation before compositi
 
 \subsection{Intersection Points}
 
-When Triangle is asked to triangulate a set of points with overlapping boundaries it must
+When Triangle is asked to triangulate a set of points with intersecting boundary edges, it must
 insert a point at the intersection, since without it at least one triangle would have to
 cross a boundary. These points are introduced with no color information, but the final colors for 
 all of the other points in the mesh have already been determined.
 
 An intersection point lies on two boundaries and therefore has four boundary edges emanating from it. 
 To determine the colors of an intersection points requires knowing the colors associated with
-points on the boundaries. For both boundaries travel both directions to the first point with color data. Note this may not
+other points on the boundaries. For both boundaries, travel both directions to the first point with color data. Note this may not
 be the first point on each side since this intersection point may be adjacent to other intersection
-points without color data. For both boundaries the colors in the color arcs are linearly interpolated. 
+points also without color data. For both boundaries, the colors in the color arcs are linearly interpolated. 
 This yields four average colors, two from the new stroke boundary and two from the old stroke boundary.
 The colors from the new stroke are composited over the colors from the old stroke to yield four new
 colors, one for each region defined by the boundary intersections. 
@@ -413,11 +418,11 @@ colors, one for each region defined by the boundary intersections.
 
 
 \subsection{Finding Modified Points}
-The above procedure has two important drawbacks. First, it processes many points that don't need
+The above procedure has two important drawbacks. First, it processes many points that do not need
 consideration which takes a considerable amount of processing time. Second, since it acts on the whole
 canvas, local changes can have global effects. To avoid this problem the algorithm determines
 which triangles can remain
-and which triangles need to be included in the re-triangulation. To accomplish this a static grid
+and which triangles need to be included in the re-triangulation (see Figure~\ref{fig:modified}). To accomplish this a static grid
 is generated and all of the cells which contain a triangle from the new stroke are marked. 
 The set of triangles from the old triangulation that intersect these grid squares are found.
 The set of edges from these triangles that do not intersect these grid cells form a ring
@@ -433,18 +438,19 @@ The new triangulation combined with the old triangles give a new triangle mesh r
     \centering
         \includegraphics[height=1.5in]{images/findingmodifiedpoints}
     \caption{Place Holder.}
+    \label{fig:modified}
 \end{figure}
 
 
 \section{Discussion and Results}
-Here we first consider how the complexity of the algorithm grows both in time and geometry.
-The results from this analysis and our experience with TrianglePainter have lead to observations in three main areas.
+Paintings made with TrianglePainter can be seen in Figures~\ref{fig:face} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
+The results from this analysis and our experience with TrianglePainter have lead to a number of observations.
 
 \subsection{Complexity}
 To find the growth rates of the algorithm we performed two experiments. 
 First, the program drew fifty random strokes without zooming.
-Next, the program drew fifty random strokes with random zooming.
-Geometry grows fastest when many strokes are composited on one another. When not zooming strokes
+Next, the program drew fifty random strokes with random zoom level for each stroke.
+Geometry grows fastest when many strokes are composited on one another. When not zooming, strokes
 must cover the same area of canvas over and over. This
 results in more geometry and therefore takes longer to render. The zooming case explores different
 areas of the canvas and therefore results in less overlapping geometry. This situation should result
@@ -455,18 +461,19 @@ in less complex geometry and therefore take less time.
   \begin{subfigure}[b]{0.5\columnwidth}
     \centering
     \includegraphics[width=\columnwidth]{graphs/numtriangles}
+    \caption{Number of triangles}
     \label{fig:numtriangles}
   \end{subfigure}%
   \begin{subfigure}[b]{0.5\columnwidth}
     \centering
     \includegraphics[width=\columnwidth]{graphs/cumulativetime}
+    \caption{Rendering time}
     \label{fig:timing}
   \end{subfigure}%
-  \vspace{-0.4cm}
   \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative render time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
 \end{figure}
 
-As seen in figure~\ref{fig:numtriangles} the zooming case grows linearly while the non-zooming
+Figure~\ref{fig:numtriangles} shows the zooming case grows linearly while the non-zooming case
 appears to grow quadratically. This is expected since every new stroke has the chance to overlap
 all of the old strokes. This means each new stroke does not just add a constant amount of geometry.
 Due to intersections with previous strokes intersection points are added. This results in a linear
@@ -477,46 +484,36 @@ a linear growth rate.
 
 Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to render. Both
 the zooming and non-zooming cases grow non-linearly over time. However, the non-zooming case takes
-a lot longer for the reasons described. It's not unexpected that even the zooming case grows non-linearly
-since even though the geometries involved aren't getting very complicated, the geometry of the entire
-canvas is increasing linearly and must be considered even if the entire canvas is not retriangulated.
+longer for the reasons described. It is not unexpected that even the zooming case grows non-linearly
+since even though the geometries involved are not becoming very complicated, the geometry of the entire
+canvas is increasing linearly and must be considered even if the entire canvas is not re-triangulated.
 
-All this suggests that a simplification is of great importance.
-The case that it is most likely to help is the non-zooming case with complex geometry. When lots of strokes
-overlap there is usually an extra geometry that does not add much detail to the drawing. By removing
+This suggests that canvas simplification is of great importance.
+The case that it is most likely to be helped is the non-zooming case with complex geometry. When lots of strokes
+overlap there is usually extra geometry that does not add much detail to the drawing. By removing
 this extra geometry the algorithm should achieve a steady growth rate.
 
 \subsection{Stability}
-Something we've worked hard to achieve is program stability. Certain geometries are fatal
-for the Triangle library. The current instability in the program is normally caused by
-providing the library with such difficult geometries. To improve program stability would
-require addressing geometries such as vertices that are too close together. This would
-take more processing time and is something we have yet to explore.
+While the Triangle library is impressively robust, there are still certain pathological geometries that can cause it to fail.  Specifically, long skinny triangles and vertices that are too close together seem to trigger triangulation failures.  Detecting these situations and fixing them, or even better modifying the geometry construction to avoid them, would solve this problem.  For example, identifying if a new vertex is too close to an existing one, and if so, merging them.  Another example is to subdivide long edges to reduce the incidence of skinny triangles.  The impact these solutions would have on processing time is something that needs to be explored.
 
 \subsection{Performance}
 The current implementation uses Python and PyOpenGL. Python's performance is slower than
 a lower level implementation in C++ would be. The drawing of the canvas is quick with
 no lag. However, the actual process to take a stroke from rasterization to triangle
-representation on the canvas is slow. On a blank canvas strokes take on the order of
-1 second to process. However, on a canvas with lots of geometry a stroke that covers
-that geometry can take several seconds to render. Some of this time is due to poor
-implementation of the algorithm. However, there are lots of calculations
-to do with the old points affected by the new stroke and the points associated with the
-new stroke itself. Since these geometries can get arbitrarily complicated, these
+representation on the canvas can be slow. On a blank canvas, strokes take less than
+one second to process. However, on a canvas with lots of geometry a stroke that overlaps
+that geometry can take several seconds to render. Some of this could be alleviated by a carefully optimized implementation. However, there are many calculations
+necessary for the old points affected by the new stroke and the points associated with the
+new stroke itself. Since these geometries can become arbitrarily complicated (in pathological cases), these
 calculations can take an arbitrarily long. This brings us to the final point, scalability.
 
 \subsection{Simplification}
-No matter how good the implementation, the fact that paintings can get arbitrarily complicated
-means there must be some way to simplify the mesh. Although we have yet to implement
-such a simplification algorithm, we have a couple suggestions on how it might be done. In most situations where
-a lot of strokes are composited on top of one another, most of the geometry is redundant. 
-For example, when an opaque stroke is laid down on top of a complex geometry, that complex
+No matter how good the implementation, the fact that paintings can become arbitrarily complicated as more and more strokes are added
+means there must be some way to simplify the mesh. In most situations where
+many strokes overlap one another, most of the geometry is redundant. For example, when an opaque stroke is laid down on top of a complex geometry, that complex
 geometry no longer has any useful information since the outline of the opaque stroke
-completely defines it. Furthermore, even with translucent or feathered strokes, enough
-composited strokes may produce complex geometry that does not add much to the output.
-Some of this geometry can be reduced without noticeable changes in the output. Such a
-simplification algorithm must be implemented to ensure a painter can continue to paint
-without the program slowing to an unusable state.
+completely defines it (all vertices are the same color).  Furthermore, even with translucent or feathered strokes, a large enough number of 
+composited strokes may produce complex geometry that does not add much to the visual appearance of the canvas. Some of this geometry can be reduced without noticeable changes.  To accomplish this, our proposed simplification algorithm would identify a vertex that can be removed via an edge collapse by measuring the change the collapse would cause in the image.  The change is computed as the magnitude of the color shift and the translation of a boundary.  If these deltas are below a threshold, then the collapse can proceed.  This process could be done when a stroke is added to the canvas, or continually in a background thread to avoid increasing apparent latency.  Though we have yet to implement this simplification algorithm, it is important to ensure a painter can continue iterate on a painting without the program becoming too slow.
 
 
 
@@ -554,6 +551,7 @@ without the program slowing to an unusable state.
         \includegraphics[width=0.49\textwidth]{images/facezoom}
         \includegraphics[width=0.49\textwidth]{images/facezoomtriangles}
     \caption{Artist time ~30 minutes. 9030 triangles. \Steve{Can we add number of strokes?}}
+    \label{fig:face}
 \end{figure*}
 
 \begin{figure*}
@@ -569,23 +567,18 @@ without the program slowing to an unusable state.
         \includegraphics[width=0.195\textwidth]{images/zoom69}
         \includegraphics[width=0.195\textwidth]{images/zoom71}
     \caption{A painting that shows extreme zoom levels.  The final image is at \Steve{zoom level XXX}.}
+    \label{fig:boxes}
 \end{figure*}
 
 \section{Conclusion}
-Vector graphics are useful for representing complex images with limited information
-while also enabling easy editing and infinite resolution. Previous work has focused
-on converting raster graphics to vector graphics, unique vector representations, and multi-scale
-raster graphics. However, until now no system
-has enabled artists to create an entire painting in vector graphics using standard brush techniques. 
-
 TrianglePainter enables a user to paint like they would in a raster graphics program 
 to create vector graphics. The core of TrianglePainter is a triangle mesh representation of the image.
 We have created an algorithm to convert a user's mouse motions into a triangle mesh, and then composite
 that mesh on the preexisting mesh containing the previous strokes.
 
-The current implementation allows artists to create minimal works. Future work should focus on
+The current implementation provides a baseline painting experience. Future work should focus on
 implementing a simplification algorithm to allow the complexity of the drawings to grow. Other
-improvements might focus on creating interesting transforms, or other operations that utilize
+improvements might focus on creating interesting manipulation tools, or other operations that utilize
 the underlying triangle mesh structure to make the artists' job easier.
 
 
