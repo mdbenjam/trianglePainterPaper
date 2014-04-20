@@ -154,24 +154,25 @@ a triangle mesh, and understanding the underlying data structures is important f
 understanding the rest of the algorithm.
 
 \subsection{Triangle Mesh}
-When a user paints he generates points that are stored on the canvas. These points are
+When a user paints, he generates points that are stored on the canvas. These points are
 connected to form a triangle mesh. In every triangle the vertices are colored to either
 produce a solid color or a linear gradient. In fact a given point that is part of
 multiple triangles can take on different colors in each triangle. Note that although
-the points are persistent, the triangles are not.
+the points are persistent as the canvas is updated, the triangles are not.  That is, the correct triangulation of the mesh points is not unique, and different equivalent triangulations may be used during the painting process.
 
 \subsection{Boundary Edges}
 Although the triangles may change over time, they must abide by constraints known as
 boundary edges. A boundary edge connects two points and specifies that no triangle
-can cross it. Like points, boundary edges are persistent. So as new triangles are created they
-may never cross a boundary edges.
+can cross it. Like points, boundary edges are persistent. So as new triangles are created by the triangulation algorithm, they
+may never cross a boundary edges.  This partially restricts the set of valid triangulations of the points.  Figure~\ref{fig:stroke} shows boundary edges in a soft brush stroke.
 
 
 \begin{figure}
     \centering
-        \includegraphics[width=0.4\textwidth]{images/stroke}
-    \caption{An example triangulation. Blue lines are boundary edges. Black lines form the triangle
+        \includegraphics[width=\columnwidth]{images/stroke}
+    \caption{An example triangulation of a smooth stroke. Blue lines are boundary edges. Black points form the triangle
     mesh with the blue lines.}
+    \label{fig:stroke}
 \end{figure}
 
 \subsection{Color Arcs}
@@ -179,18 +180,18 @@ Since triangles are not persistent they cannot store color data.
 Storing colors in points works well when the color is the same for all triangles connected
 to that point. However, when a point lies on a sharp boundary it may take on different colors in
 triangles on either side of the boundary. The need for the same point to take on different
-colors in different triangles lead to the development of color arcs.
+colors in different triangles lead to the development of color arcs (see Figure~\ref{fig:arcs}).
 
-A color arc has three components: a start vector, an end vector, and a color. 
+A color arc has three components: a start direction, an end direction, and a color. 
 Determining the color of a vertex in a given triangle requires two steps. First,
 the vector from the point to the centroid of the triangle is calculated. Second,
 the color arc is found which contains this vector. Containing the vector means one must turn
-clockwise from the starting vector to reach it and counter-clockwise from the ending vector.
+clockwise from the starting direction to reach it and counter-clockwise from the ending direction.
 The point takes on the color of the arc in which the vector from the point to the centroid resides.
 
-The color arcs for every point must satisfy three conditions. First, they must be disjoint. Second,
+A point may have more than one color arc, and they must satisfy three conditions. First, they must be disjoint. Second,
 they must cover all $2\pi$ radians around the point. These first two conditions ensure that for any
-triangle a point will take on exactly one color. Third, the start and end vectors must line up
+triangle a point will take on exactly one color. Third, the start and end vectors must align
 with boundary edges. This condition makes all colors and gradients emanate from boundaries.
 
 \begin{figure}
@@ -200,19 +201,20 @@ with boundary edges. This condition makes all colors and gradients emanate from 
     mesh with the boundary edges. Each point is given a color arc which defines its color in that range.
     Note that the points in the middle row have different colors on top and bottom. This gives blue
     triangles on top and red on bottom with a hard boundary in between.}
+    \label{fig:arcs}
 \end{figure}
 
 \subsection{Rendering}
 Once the triangle mesh has been generated it is simple to render. In each triangle the vertices
 take on a given color based on their color arcs and the centroid of the triangle. If the three
-vertices in the triangle take on the same color value then the triangle will be solid. If instead the 
+vertices in the triangle take on the same color value then the triangle will be flat shaded. If instead the 
 vertices take on different color values then there will be a gradient over the triangle.
 
-Since the conditions on color arcs make colors emanate from boundaries it's easy to create regions
-containing either a solid color or linear gradient. A region will have a solid color if the
+Since the conditions on color arcs make colors emanate from boundaries it is easy to create regions (e.g. a brush stroke boundary)
+containing either a solid color or linear gradient. A region will have a solid color (e.g. a hard brush stroke) if the
 boundaries that surround it all take on the same color. If instead a region is surrounded by
 two boundaries, one which has a given color and the other which has a transparent version of that color
-then there will be a linear gradient in that region between the two boundaries.
+then there will be a linear gradient in that region between the two boundaries (e.g. a soft brush stroke).
 
 \begin{figure}
     \centering
