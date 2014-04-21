@@ -142,8 +142,8 @@ painting program where strokes with solid colors and gradients are composited on
 \begin{figure}
     \centering
         \includegraphics[width=\columnwidth]{images/stroke}
-    \caption{An example triangulation of a smooth stroke. Blue lines are boundary edges. Black points form the triangle
-    mesh with the blue lines.}
+    \caption{Example smooth stroke triangulation. Blue segments are boundary edges, and small blue squares denote
+    mesh vertices.}
     \label{fig:stroke}
 \end{figure}
 
@@ -192,14 +192,20 @@ When a user paints, he generates points that are stored on the canvas. These poi
 connected to form a triangle mesh. In every triangle the vertices are colored to either
 produce a solid color or a linear gradient. In fact a given point that is part of
 multiple triangles can take on different colors in each triangle. Note that although
-the points are persistent as the canvas is updated, the triangles are not.  That is, the correct triangulation of the mesh points is not unique, and different equivalent triangulations may be used during the painting process.
+the points are persistent as the canvas is updated, the triangles are not.  
+That is, triangulation of the mesh points is not unique, and different, equivalent triangulations may 
+be used throughout the painting process.
+Thus, we refer to them as ``mesh points'' rather than ``vertices'' (which implies a particular graph
+structure).
 
 \subsection{Boundary Edges}
-Although the triangles may change over time, they must abide by constraints known as
-boundary edges. A boundary edge connects two points and specifies that no triangle
-can cross it. Like points, boundary edges are persistent. So as new triangles are created by the triangulation algorithm, they
-may never cross a boundary edges.  This partially restricts the set of valid triangulations of the points.  Figure~\ref{fig:stroke} shows boundary edges in a soft brush stroke.
-
+Although the triangles may change over time, they must abide by constraints we call
+\emph{boundary edges}, each of which connects a pair of points and specifies that no triangle
+can cross it. Like mesh points, boundary edges are persistent. 
+%
+So as new triangles are created by the triangulation algorithm, they
+may never cross a boundary edge.  
+This partially restricts the set of valid triangulations of the points.  Figure~\ref{fig:stroke} shows boundary edges for a soft brush stroke.
 
 \subsection{Color Arcs}
 Since triangles are not persistent they cannot store color data.
