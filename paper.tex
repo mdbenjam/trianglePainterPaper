@@ -116,18 +116,35 @@ a new canvas with the combined strokes.
 
 TrianglePainter reduces the barrier to creating vector graphics by enabling a painting-like interface, with support for sharp and smooth edges. This in turn allows 
 artists to focus on the painting and not the way in which they paint, while still 
-getting the benefits of vector graphics.
+getting the benefits of vector graphics. We demonstrate our method by creating digital paintings with a 
+range of effects and resolutions, including zoom factors of up to 500,000:1 with an effective resolution
+of an image with more than $10^{17}$ pixels.
 
-\section{Related Works}
+\section{Related Work}
 
 Previous work has focused on converting images into vector graphics to take advantage of the
 efficient storage, easy editing, and infinite resolution it provides. For example the method of
 Lecot and L\'{e}vy~\shortcite{lecot:ARD:2006}
 minimizes an energy function to segment an image into a number of regions that are bounded
 by cubic splines and filled with solid colors or gradients. A different approach by Lai~\etal~\shortcite{Lai:2009:ATG:1531326.1531391} 
-automatically creates gradient meshes with support for holes. Yet another example is the work of Liao~\etal~\shortcite{10.1109/TVCG.2012.76} 
-which converts an image into a triangle mesh. All three of these can convert images into
-a vector representation, yet none of them allow a user to create a painting in the vector medium.
+automatically creates gradient meshes with support for holes. 
+Our work builds on the representation introduced by
+Liao~\etal~\shortcite{10.1109/TVCG.2012.76}, who showed that
+a photo can be converted into a triangle mesh.
+They demonstrated that natural images can be concisely represented
+by triangles, using mesh simplification, and that
+various image editing operations can be applied in this representation,
+including an abstraction technique similar to that of 
+DeCarlo and Santella~\shortcite{DeCarlo:2002:SAP:566654.566650}.
+In principle, one could create a digital painting in a conventional
+program and then use one of these approaches to convert to a vector
+representation. In contrast our paper shows how to paint directly
+in this representation, offering several advantages including
+efficiency and the ability to handle imagery with enormously
+higher effective resolution.
+% All three of these can convert images into
+% a vector representation, yet none of them allow a user to create a painting in the vector medium.
+
 
 Other work has proposed novel vector graphic data structures. For example 
 Frisken~\etal~\shortcite{Frisken:2000:ASD:344779.344899}
@@ -169,9 +186,11 @@ procedural textures to avoid any fundamental limit on resolution. Although usefu
 generating procedural textures can be difficult for artists.
 
 Our work builds on these findings. However, our goal is to enable artists to create vector
-graphics through standard painting techniques without having to deal with the underlying representation.
+graphics through standard painting techniques without having to consider the underlying representation.
+\ignorethis{
 We start from the triangle mesh structure described by Liao~\etal~\shortcite{10.1109/TVCG.2012.76} to build a painting program
 where the triangle mesh is created while the artists lays down strokes. 
+}
 
 \begin{figure}
     \centering
