@@ -173,8 +173,8 @@ There have been a few projects that enable painting directly with vector data.  
 
 Another line of research has explored entirely new ways of painting.
 Orzan~\etal~\shortcite{Orzan:2008:DCV:1360612.1360691}
-specified Diffusion curves which
-describe a new painting technique where artists specify edges and colors for those edges. Their system
+introduced \emph{diffusion curves} --
+a new painting technique where artists specify edges and colors for those edges. Their system
 then solves a Poisson equation to diffuse the colors between boundary conditions specified at the edges.
 Similarly the method of McCann and Pollard~\shortcite{McCann:2008:RGP:1360612.1360692}
 lets artists paint in the gradient domain. Both of these approaches yield creative new aesthetic ranges 
@@ -202,10 +202,11 @@ where the triangle mesh is created while the artists lays down strokes.
 \begin{figure}
     \centering
         \includegraphics[width=0.4\textwidth]{images/colorarcsfinal}
-    \caption{An example of color arcs. The orange lines are boundary edges. Black lines form the triangle
-    mesh with the boundary edges. Each point is given a color arc which defines its color in that range.
-    Note that the points in the middle row have different colors on top and bottom. This gives blue
-    triangles on top and red on bottom with a hard boundary in between.}
+    \caption{Color arcs. Orange lines are boundary edges, and together with black lines form the triangle
+    mesh. Each point is given more or more color arcs, 
+    which stores the color of triangle corners in that angular range.
+    Points in the middle row have red arcs on top and blue below,
+    yielding triangles with those colors, separated by a hard boundary.}
     \label{fig:arcs}
 \end{figure}
 
@@ -292,10 +293,11 @@ Converting a user's mouse motion into a set of contours requires two steps.
 First, the user's mouse movements are captured by a set of polygons which can be
 rendered to yield a rasterized version of the stroke.
 Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{lorensen1987}
-is used to extract iso-contours of 50\% gray. This returns a very dense set of points 
+is used to extract iso-contours of 50\% gray. This returns a very dense set of points,
 which we reduce through a pruning process to
 get a sparse but accurate representation of the contour.
-
+The pruning procedure walks around the contour to form an approximating polygon $P$,
+greedily eliding vertices whenever they lie within a small threshold distance of $P$.
 
 % Adam and Steve should we talk about how anti-aliasing + marching squares can achieve sub-pixel
 % resolution?
@@ -307,12 +309,13 @@ get a sparse but accurate representation of the contour.
 The contour contains two important pieces of information. First, it describes all of the points of the stroke.
 Second, segments connecting adjacent points describe the boundaries of the stroke. 
 A triangle mesh must contain all the points and stay
-within the boundaries. For example, a concave contour should not contain triangles inside the concavity since such triangles
-would be outside of the boundary.
-Furthermore, these boundaries will later be crucial when compositing a stroke onto a canvas.
-
-We utilized Jonathan Shewchuk's Triangle library~\cite{shewchuk2002} to perform constrained Delaunay triangulations
-on the given set of points and boundaries. The library outputs a mesh that
+within the boundaries. 
+For example, a concave contour like the outline of the letter C should not contain 
+triangles inside the concavity, since such triangles would be outside of the boundary.
+These boundaries will prove to be crucial when compositing a stroke onto the canvas.
+%
+We perform constrained Delaunay triangulation on the given set of points and boundaries using
+Shewchuk's implementation~\shortcite{shewchuk2002}, and the output is a mesh that
 approximately represents the drawn stroke.
 
 \begin{figure}
@@ -337,7 +340,7 @@ approximately represents the drawn stroke.
 % \includegraphics[height=1.5in]{images/triangulationprocess}
 
 \subsection{Soft Strokes}
-The above procedure converts a hard brush stroke into a triangle mesh. A more interesting
+The above procedure converts a hard brush stroke into a triangle mesh. A more challenging
 case is converting a soft brush stroke with linear gradient into a triangle mesh. A soft stroke has two
 components, an inner hard stroke and an outer gradient stroke. Since the triangles in the inner and
 outer parts of the stroke must be colored differently, none of the triangles may cross the boundary
