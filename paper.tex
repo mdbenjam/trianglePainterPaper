@@ -124,8 +124,8 @@ Previous work has focused on converting images into vector graphics to take adva
 efficient storage, easy editing, and infinite resolution it provides. For example the method of
 Lecot and L\'{e}vy~\shortcite{lecot:ARD:2006}
 minimizes an energy function to segment an image into a number of regions that are bounded
-by cubic splines and filled with solid colors or gradients. A different approach by \cite{Lai:2009:ATG:1531326.1531391} 
-automatically creates gradient meshes with support for holes. Yet another example is \cite{10.1109/TVCG.2012.76} 
+by cubic splines and filled with solid colors or gradients. A different approach by Lai~\etal~\shortcite{Lai:2009:ATG:1531326.1531391} 
+automatically creates gradient meshes with support for holes. Yet another example is the work of Liao~\etal~\shortcite{10.1109/TVCG.2012.76} 
 which converts an image into a triangle mesh. All three of these can convert images into
 a vector representation, yet none of them allow a user to create a painting in the vector medium.
 
@@ -135,7 +135,7 @@ introduced Adaptively Sampled Distance Fields (ADFs), which specify a signed dis
 (or a curve in the plane).
 %
 Rendering the shape requires sampling the function to determine whether or not a pixel is on the shape.
-A quadtree accompanies the distance function to specify where higher sampling rates are necessary. \cite{Bremer:2001:VCM}
+A quadtree accompanies the distance function to specify where higher sampling rates are necessary. The method of Bremer~\etal~\shortcite{Bremer:2001:VCM}
 further describes how ADFs can be created and used. However, it is unclear how ADFs might be used in a general
 painting program where strokes with solid colors and gradients are composited on top of one another.
 
@@ -147,29 +147,30 @@ painting program where strokes with solid colors and gradients are composited on
     \label{fig:stroke}
 \end{figure}
 
-There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry.  \cite{ando2010} also used a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.  Finally, \cite{asente2013} implemented a feature in Adobe Illustrator to create contour gradients from shapes, which fill the shapes with small patches of linear gradients to create a bevel-like effect.  Contour gradients can be used to control opacity to create soft strokes, but each stroke must be stored as a separate (aggregate) object rather than a single flattened canvas representation.
+There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry. The method of Ando and Tsuruno~\shortcite{ando2010} also uses a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.  Finally, Asente and Carr~\shortcite{asente2013} implemented a feature in Adobe Illustrator to create contour gradients from shapes, which fill the shapes with small patches of linear gradients to create a bevel-like effect.  Contour gradients can be used to control opacity to create soft strokes, but each stroke must be stored as a separate (aggregate) object rather than a single flattened canvas representation.
 
-Another series of works have created entirely new ways of painting. Diffusion curves as specified in \cite{Orzan:2008:DCV:1360612.1360691}
-describe a new painting technique where the artists specify edges and colors for those edges. Their system
+Another series of works have created entirely new ways of painting. Orzan~\etal~\shortcite{Orzan:2008:DCV:1360612.1360691}
+specified Diffusion curves which
+describe a new painting technique where artists specify edges and colors for those edges. Their system
 then solves a Poisson equation to diffuse the colors between boundary conditions specified at the edges.
-Similarly \cite{McCann:2008:RGP:1360612.1360692}
+Similarly the method of McCann and Pollard~\shortcite{McCann:2008:RGP:1360612.1360692}
 lets artists paint in the gradient domain. Both of these approaches yield fantastic works of art, yet
 they are really new mediums for artists to explore rather than a vectorized version of conventional
 painting techniques.
 
-Work has also been done in multi-resolution painting using raster graphics. \cite{Berman:1994:MPC:192161.192181}
+Work has also been done in multi-resolution painting using raster graphics. The method of Berman~\etal~\shortcite{Berman:1994:MPC:192161.192181}
 stores image information in a quadtree so that different parts of the image can have different levels of detail.
 This means the image effectively has an infinite level of detail, yet since it is stored in raster form
 there are still limitations. For example a stroke painted at coarse detail will still look blurry when
-zoomed in. The strokes are limited to the resolution they are painted at. \cite{Carr:2004:PD:1186562.1015809}
+zoomed in. The strokes are limited to the resolution they are painted at. Similarly the method of Carr and Hart~\shortcite{Carr:2004:PD:1186562.1015809}
 also allows the development of multi-resolution images using rasters, and as such suffers from the
-same limitations. Another multi-resolution approach by \cite{Perlin:1995:LPP:218380.218437} uses
+same limitations. Another multi-resolution approach by Perlin and Velho~\shortcite{Perlin:1995:LPP:218380.218437} uses
 procedural textures to avoid any fundamental limit on resolution. Although useful,
 generating procedural textures can be difficult for artists.
 
 Our work builds on these findings. However, our goal is to enable artists to create vector
 graphics through standard painting techniques without having to deal with the underlying representation.
-We start from the triangle mesh structure described in \cite{10.1109/TVCG.2012.76} to build a painting program
+We start from the triangle mesh structure described by Liao~\etal~\shortcite{10.1109/TVCG.2012.76} to build a painting program
 where the triangle mesh is created while the artists lays down strokes. 
 
 \begin{figure}
