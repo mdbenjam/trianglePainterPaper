@@ -133,6 +133,14 @@ A quadtree accompanies the distance function to specify where higher sampling ra
 further describes how ADFs can be created and used. However, it is unclear how ADFs might be used in a general
 painting program where strokes with solid colors and gradients are composited on top of one another.
 
+\begin{figure}
+    \centering
+        \includegraphics[width=\columnwidth]{images/stroke}
+    \caption{An example triangulation of a smooth stroke. Blue lines are boundary edges. Black points form the triangle
+    mesh with the blue lines.}
+    \label{fig:stroke}
+\end{figure}
+
 There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry.  \cite{ando2010} also used a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.  Finally, \cite{asente2013} implemented a feature in Adobe Illustrator to create contour gradients from shapes, which fill the shapes with small patches of linear gradients to create a bevel-like effect.  Contour gradients can be used to control opacity to create soft strokes, but each stroke must be stored as a separate (aggregate) object rather than a single flattened canvas representation.
 
 Another series of works have created entirely new ways of painting. Diffusion curves as specified in \cite{Orzan:2008:DCV:1360612.1360691}
@@ -158,6 +166,16 @@ graphics through standard painting techniques without having to deal with the un
 We start from the triangle mesh structure described in \cite{10.1109/TVCG.2012.76} to build a painting program
 where the triangle mesh is created while the artists lays down strokes. 
 
+\begin{figure}
+    \centering
+        \includegraphics[width=0.4\textwidth]{images/colorarcs2}
+    \caption{An example of color arcs. The orange lines are boundary edges. Black lines form the triangle
+    mesh with the boundary edges. Each point is given a color arc which defines its color in that range.
+    Note that the points in the middle row have different colors on top and bottom. This gives blue
+    triangles on top and red on bottom with a hard boundary in between.}
+    \label{fig:arcs}
+\end{figure}
+
 \section{The Canvas Model}
 The data necessary to render the painting resides in the canvas. However, the canvas contains more than just
 a triangle mesh, and understanding the underlying data structures is important for 
@@ -177,14 +195,6 @@ can cross it. Like points, boundary edges are persistent. So as new triangles ar
 may never cross a boundary edges.  This partially restricts the set of valid triangulations of the points.  Figure~\ref{fig:stroke} shows boundary edges in a soft brush stroke.
 
 
-\begin{figure}
-    \centering
-        \includegraphics[width=\columnwidth]{images/stroke}
-    \caption{An example triangulation of a smooth stroke. Blue lines are boundary edges. Black points form the triangle
-    mesh with the blue lines.}
-    \label{fig:stroke}
-\end{figure}
-
 \subsection{Color Arcs}
 Since triangles are not persistent they cannot store color data.
 Storing colors in points works well when the color is the same for all triangles connected
@@ -203,16 +213,6 @@ A point may have more than one color arc, and they must satisfy three conditions
 they must cover all $2\pi$ radians around the point. These first two conditions ensure that for any
 triangle a point will take on exactly one color. Third, the start and end vectors must align
 with boundary edges. This condition makes all colors and gradients emanate from boundaries.
-
-\begin{figure}
-    \centering
-        \includegraphics[width=0.4\textwidth]{images/colorarcs2}
-    \caption{An example of color arcs. The orange lines are boundary edges. Black lines form the triangle
-    mesh with the boundary edges. Each point is given a color arc which defines its color in that range.
-    Note that the points in the middle row have different colors on top and bottom. This gives blue
-    triangles on top and red on bottom with a hard boundary in between.}
-    \label{fig:arcs}
-\end{figure}
 
 \subsection{Rendering}
 Once the triangle mesh has been generated it is simple to render. In each triangle the vertices
@@ -251,7 +251,7 @@ figure-eight, will have more than one contour.
 Converting a user's mouse motion into a set of contours requires two steps.
 First, the user's mouse movements are captured by a set of polygons which can be
 rendered to yield a rasterized version of the stroke.
-Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{XXX}
+Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{lorensen1987}
 is used to extract iso-contours of 50\% gray. This returns a very dense set of points 
 which we reduce through a pruning process to
 get a sparse but accurate representation of the contour.
@@ -271,7 +271,7 @@ within the boundaries. For example, a concave contour should not contain triangl
 would be outside of the boundary.
 Furthermore, these boundaries will later be crucial when compositing a stroke onto a canvas.
 
-We utilized Jonathan Shewchuk's Triangle library~\cite{XXX} to perform constrained Delaunay triangulations
+We utilized Jonathan Shewchuk's Triangle library~\cite{shewchuk2002} to perform constrained Delaunay triangulations
 on the given set of points and boundaries. The library outputs a mesh that
 approximately represents the drawn stroke.
 
@@ -312,7 +312,7 @@ derived from the contours are given to Triangle and a mesh is returned. This mes
 stroke where no triangle crosses the boundary between the soft and hard regions
 of the stroke. Points on the contour of the inner stroke will have color arcs with the stroke color,
 while the points on the contour of the outer stroke will have transparent color arcs. This gives
-all triangles connecting the inner and outer strokes a linear gradient (again see Figure~\ref{softarcs}).
+all triangles connecting the inner and outer strokes a linear gradient (again see Figure~\ref{fig:softarcs}).
 Figure~\ref{fig:rastertotriangles} shows the process of triangulating both hard and soft strokes.
 
 % \begin{figure}
@@ -376,25 +376,6 @@ the old point must be determined through bilinear interpolation before compositi
 
 
 
-
-\subsection{Intersection Points}
-
-When Triangle is asked to triangulate a set of points with intersecting boundary edges, it must
-insert a point at the intersection, since without it at least one triangle would have to
-cross a boundary. These points are introduced with no color information, but the final colors for 
-all of the other points in the mesh have already been determined.
-
-An intersection point lies on two boundaries and therefore has four boundary edges emanating from it. 
-To determine the colors of an intersection points requires knowing the colors associated with
-other points on the boundaries. For both boundaries, travel both directions to the first point with color data. Note this may not
-be the first point on each side since this intersection point may be adjacent to other intersection
-points also without color data. For both boundaries, the colors in the color arcs are linearly interpolated. 
-This yields four average colors, two from the new stroke boundary and two from the old stroke boundary.
-The colors from the new stroke are composited over the colors from the old stroke to yield four new
-colors, one for each region defined by the boundary intersections (see figure~\ref{fig:intersectioncolors}) 
-
-An example of how color arcs are determined for both intersection and regular points see figure~\ref{fig:colorarcdeterminer}.
-
 \begin{figure}
     \centering
         \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1new}
@@ -429,6 +410,23 @@ An example of how color arcs are determined for both intersection and regular po
     \label{fig:colorarcdeterminer}
 \end{figure*}
 
+\subsection{Intersection Points}
+
+When Triangle is asked to triangulate a set of points with intersecting boundary edges, it must
+insert a point at the intersection, since without it at least one triangle would have to
+cross a boundary. These points are introduced with no color information, but the final colors for 
+all of the other points in the mesh have already been determined.
+
+An intersection point lies on two boundaries and therefore has four boundary edges emanating from it. 
+To determine the colors of an intersection points requires knowing the colors associated with
+other points on the boundaries. For both boundaries, travel both directions to the first point with color data. Note this may not
+be the first point on each side since this intersection point may be adjacent to other intersection
+points also without color data. For both boundaries, the colors in the color arcs are linearly interpolated. 
+This yields four average colors, two from the new stroke boundary and two from the old stroke boundary.
+The colors from the new stroke are composited over the colors from the old stroke to yield four new
+colors, one for each region defined by the boundary intersections (see figure~\ref{fig:intersectioncolors}) 
+
+An example of how color arcs are determined for both intersection and regular points see figure~\ref{fig:colorarcdeterminer}.
 
 \subsection{Finding Modified Points}
 The above procedure has two important drawbacks. First, it processes many points that do not need
@@ -447,20 +445,9 @@ other part of the canvas. Therefore, the old triangles from the rest of the canv
 The new triangulation combined with the old triangles give a new triangle mesh representation of the entire canvas.
 
 
-\begin{figure}
-    \centering
-        \includegraphics[width=.5\textwidth]{images/grid}
-    \caption{An example of how TrianglePainter determines which triangles to save and which to retriangulate. Blue
-    lines represent the boundaries of old strokes, orange lines are the boundaries of the new stroke, red lines are
-    the triangles that will be reused, and purple lines define the area that needs to be retriangulated. The purple
-    lines are edges of triangles that intersect the new stroke. Since they interesect the new stroke they are no
-    longer valid and must be retriangulated. All other triangles on the canvas can be reused.}
-    \label{fig:modified}
-\end{figure}
-
 
 \section{Discussion and Results}
-Paintings made with TrianglePainter can be seen in Figures~\ref{fig:face}, \ref{fig:rainbow}, \ref{fig:stop} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
+Paintings made with TrianglePainter can be seen in Figures~\ref{fig:face}, \ref{fig:teaser}, \ref{fig:stop} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with TrianglePainter have lead to a number of observations.
 
 \subsection{Complexity}
@@ -472,23 +459,6 @@ must cover the same area of canvas over and over. This
 results in more geometry and therefore takes longer to render. The zooming case explores different
 areas of the canvas and therefore results in less overlapping geometry. This situation should result
 in less complex geometry and therefore take less time.
-
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.5\columnwidth}
-    \centering
-    \includegraphics[width=\columnwidth]{graphs/numtriangles}
-    \caption{Number of triangles}
-    \label{fig:numtriangles}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.5\columnwidth}
-    \centering
-    \includegraphics[width=\columnwidth]{graphs/cumulativetime}
-    \caption{Rendering time}
-    \label{fig:timing}
-  \end{subfigure}%
-  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative render time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
-\end{figure}
 
 Figure~\ref{fig:numtriangles} shows the zooming case grows linearly while the non-zooming case
 appears to grow quadratically. This is expected since every new stroke has the chance to overlap
@@ -512,6 +482,17 @@ this extra geometry the algorithm should achieve a steady growth rate.
 \subsection{Stability}
 While the Triangle library is impressively robust, there are still certain pathological geometries that can cause it to fail.  Specifically, long skinny triangles and vertices that are too close together seem to trigger triangulation failures.  Detecting these situations and fixing them, or even better modifying the geometry construction to avoid them, would solve this problem.  For example, identifying if a new vertex is too close to an existing one, and if so, merging them.  Another example is to subdivide long edges to reduce the incidence of skinny triangles.  The impact these solutions would have on processing time is something that needs to be explored.
 
+\begin{figure}
+    \centering
+        \includegraphics[width=\columnwidth]{images/grid}
+    \caption{An example of how TrianglePainter determines which triangles to save and which to retriangulate. Blue
+    lines represent the boundaries of old strokes, orange lines are the boundaries of the new stroke, red lines are
+    the triangles that will be reused, and purple lines define the area that needs to be retriangulated. The purple
+    lines are edges of triangles that intersect the new stroke. Since they interesect the new stroke they are no
+    longer valid and must be retriangulated. All other triangles on the canvas can be reused.}
+    \label{fig:modified}
+\end{figure}
+
 \subsection{Performance}
 The current implementation uses Python and PyOpenGL. Python's performance is slower than
 a lower level implementation in C++ would be. The drawing of the canvas is quick with
@@ -530,6 +511,23 @@ many strokes overlap one another, most of the geometry is redundant. For example
 geometry no longer has any useful information since the outline of the opaque stroke
 completely defines it (all vertices are the same color).  Furthermore, even with translucent or feathered strokes, a large enough number of 
 composited strokes may produce complex geometry that does not add much to the visual appearance of the canvas. Some of this geometry can be reduced without noticeable changes.  To accomplish this, our proposed simplification algorithm would identify a vertex that can be removed via an edge collapse by measuring the change the collapse would cause in the image.  The change is computed as the magnitude of the color shift and the translation of a boundary.  If these deltas are below a threshold, then the collapse can proceed.  This process could be done when a stroke is added to the canvas, or continually in a background thread to avoid increasing apparent latency.  Though we have yet to implement this simplification algorithm, it is important to ensure a painter can continue to iterate on a painting without the program becoming too slow.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.5\columnwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{graphs/numtriangles}
+    \caption{Number of triangles}
+    \label{fig:numtriangles}
+  \end{subfigure}%
+  \begin{subfigure}[b]{0.5\columnwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{graphs/cumulativetime}
+    \caption{Rendering time}
+    \label{fig:timing}
+  \end{subfigure}%
+  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative render time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
+\end{figure}
 
 
 
@@ -568,14 +566,6 @@ composited strokes may produce complex geometry that does not add much to the vi
         \includegraphics[width=0.49\textwidth]{images/facezoomtriangles}
     \caption{Artist time ~30 minutes. 9030 triangles. \Steve{Can we add number of strokes?}}
     \label{fig:face}
-\end{figure*}
-
-\begin{figure*}
-    \centering
-        \includegraphics[width=0.49\textwidth]{images/rainbow2}
-        % \includegraphics[width=0.49\textwidth]{images/facezoomtriangles}
-    \caption{An example of soft strokes}
-    \label{fig:rainbow}
 \end{figure*}
 
 \begin{figure*}
