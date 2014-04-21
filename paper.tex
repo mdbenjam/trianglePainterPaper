@@ -376,6 +376,17 @@ We also discuss the challenge intersecting boundaries pose for the algorithm, as
 as a technique to reduce the number of triangles that are retriangulated on the canvas.
 
 
+\begin{figure}
+    \centering
+        \fbox{\includegraphics[width=.22\textwidth]{images/emptycanvas}}
+        \fbox{\includegraphics[width=.22\textwidth]{images/canvaswithonestroke}}
+    \caption{The figure on the left shows an empty canvas with a number of points and boundaries defined along the edges
+             to provide the initial triangulation. The figure on the right shows how a stroke is composited onto
+             the empty canvas. Blue edges are boundary edges. Red edges form the triangle mesh with the blue edges.}
+    \label{fig:firststrokes}
+\end{figure}
+
+
 \subsection{Adding Points to the Canvas}
 
 Every canvas begins with an initial set of points distributed along the edges. These
@@ -389,17 +400,6 @@ all of the boundaries are stored and given to Triangle, the stroke edges are pre
 no triangle can cross the boundary of a stroke. Without this constraint, it would be impossible to correctly color the
 triangles since they would straddle color arcs. Once a new mesh is formed the color arcs of the 
 new and old points must be computed.
-
-
-\begin{figure}
-    \centering
-        \fbox{\includegraphics[width=.22\textwidth]{images/emptycanvas}}
-        \fbox{\includegraphics[width=.22\textwidth]{images/canvaswithonestroke}}
-    \caption{The figure on the left shows an empty canvas with a number of points and boundaries defined along the edges
-             to provide the initial triangulation. The figure on the right shows how a stroke is composited onto
-             the empty canvas. Blue edges are boundary edges. Red edges form the triangle mesh with the blue edges.}
-    \label{fig:firststrokes}
-\end{figure}
 
 
 \subsection{Determining Colors}
