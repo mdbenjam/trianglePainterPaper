@@ -155,7 +155,7 @@ introduced Adaptively Sampled Distance Fields (ADFs), which specify a signed dis
 %
 Rendering the shape requires sampling the function to determine whether or not a pixel is on the shape.
 A quadtree accompanies the distance function to specify where higher sampling rates are necessary. The method of Bremer~\etal~\shortcite{Bremer:2001:VCM}
-further describes how ADFs can be created and used. However, it is unclear how ADFs might be used in a general
+further describes how ADFs can be created and used. However, it remains unclear how ADFs might be used in a general
 painting program where strokes with solid colors and gradients are composited on top of one another.
 
 \begin{figure}
@@ -168,14 +168,16 @@ painting program where strokes with solid colors and gradients are composited on
 
 There have been a few projects that enable painting directly with vector data.  Most similar is the work of DiVerdi et al.~\shortcite{diverdi2012,diverdi2013}, which uses many polygonal paint splats to create a watercolor-like effect.  These arbitrary polygons are costly to render however, and ``smooth'' effects are only created via many overlapping transparent polygons, which results in a very large amount of geometry. The method of Ando and Tsuruno~\shortcite{ando2010} also uses a dynamic vector representation for their 2D fluid simulation to create marbling patterns stored as B\'{e}zier silhouettes.  They developed a simulation that adaptively updates the B\'{e}zier to maintain nice contours, but the complexity of the document quickly grows too large to compute interactively.  Finally, Asente and Carr~\shortcite{asente2013} implemented a feature in Adobe Illustrator to create contour gradients from shapes, which fill the shapes with small patches of linear gradients to create a bevel-like effect.  Contour gradients can be used to control opacity to create soft strokes, but each stroke must be stored as a separate (aggregate) object rather than a single flattened canvas representation.
 
-Another series of works have created entirely new ways of painting. Orzan~\etal~\shortcite{Orzan:2008:DCV:1360612.1360691}
+Another line of research has explored entirely new ways of painting.
+Orzan~\etal~\shortcite{Orzan:2008:DCV:1360612.1360691}
 specified Diffusion curves which
 describe a new painting technique where artists specify edges and colors for those edges. Their system
 then solves a Poisson equation to diffuse the colors between boundary conditions specified at the edges.
 Similarly the method of McCann and Pollard~\shortcite{McCann:2008:RGP:1360612.1360692}
-lets artists paint in the gradient domain. Both of these approaches yield fantastic works of art, yet
-they are really new mediums for artists to explore rather than a vectorized version of conventional
-painting techniques.
+lets artists paint in the gradient domain. Both of these approaches yield creative new aesthetic ranges 
+beyond what is straightforward in the traditional pixel-based painting model. Nevertheless,
+they represent a new painting metaphor for the artist, rather than a vectorized version of the conventional
+digital painting approach familiar to artists.
 
 Work has also been done in multi-resolution painting using raster graphics. The method of Berman~\etal~\shortcite{Berman:1994:MPC:192161.192181}
 stores image information in a quadtree so that different parts of the image can have different levels of detail.
@@ -229,6 +231,16 @@ So as new triangles are created by the triangulation algorithm, they
 may never cross a boundary edge.  
 This partially restricts the set of valid triangulations of the points.  Figure~\ref{fig:stroke} shows boundary edges for a soft  stroke.
 
+\begin{figure}[t]
+    \centering
+        \includegraphics[width=0.5\textwidth]{images/gradientarcs}
+    \caption{A close look at a gradient stroke. The blue edges are boundaries where
+    the points have gray color arcs as shown. The purple edges are boundaries where
+    the points have transparent gray color arcs. This gives triangles connecting the two boundaries
+    a linear gradient from gray to white.}
+    \label{fig:softarcs}
+\end{figure}
+
 \subsection{Color Arcs}
 Since triangles are not persistent they cannot store color data.
 Storing colors in points works well when the color is the same for all triangles connected
@@ -260,16 +272,6 @@ boundaries that surround it all take on the same color. If instead a region is s
 two boundaries, one which has a given color and the other which has a transparent version of that color
 then there will be a linear gradient in that region between the two boundaries (e.g. a soft brush stroke).
 Figure~\ref{fig:softarcs} shows the color arcs on such a soft stroke.
-
-\begin{figure}
-    \centering
-        \includegraphics[width=0.5\textwidth]{images/gradientarcs}
-    \caption{A close look at a gradient stroke. The blue edges are boundaries where
-    the points have gray color arcs as shown. The purple edges are boundaries where
-    the points have transparent gray color arcs. This gives triangles connecting the two boundaries
-    a linear gradient from gray to white.}
-    \label{fig:softarcs}
-\end{figure}
 
 \section{Triangulating Strokes}
 
