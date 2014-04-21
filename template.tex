@@ -45,13 +45,13 @@
 \maketitle
 
 \begin{abstract}
-Vector graphics have a compact representation, are easy to manipulate, and have infinite resolution.
-Traditionally, vector graphics have required artists to master a new skill in order to effectively utilize
-them. Recent work has converted raster graphics to vector graphics, allowed multi-resolution raster painting,
-and created new ways to represent vector graphics. However, none of these have solved the problem of
-letting an artist use standard and intuitive raster painting techniques to generate vector graphics.
-Our algorithm, TrianglePainter, converts a user's strokes into a triangle mesh vector representation. 
-TrianglePainter lets artists focus on the art, while it handles the vectorization in the background.
+Although vector graphics program have a number of advantages, current vector painting programs
+do not allow an artist to use traditional painting techniques. We propose a new algorithm that translates a
+user's mouse motion into a triangle mesh representation. This triangle mesh can then be composited onto
+a canvas containing an existing mesh representation of the previous strokes. 
+This representation allows the algorithm to render solid colors and linear
+gradients. It also enables painting at any resolution. This gives artists the opportunity to create complex,
+multi-scale drawings with gradients while avoiding artifacts.  
 
 \end{abstract}
 
@@ -96,7 +96,7 @@ strokes akin to the process in a raster graphics program. Upon mouse-up the stro
 converted to our underlying triangle mesh representation. In this way a user may paint using
 vector graphics without worrying about the representation.
 
-This representation allows painting at any scale. A user can make large strokes
+This procedure allows painting at any scale. A user can make large strokes
 while zoomed out and then zoom in to make fine details. All of this can happen without
 loss of quality since the data is stored using triangles instead of pixels, which can represent sharp boundaries at any orientation.  Furthermore, the use of smooth shading when rendering the triangles allows for vector representation of gradient effects.  We take advantage of this feature to create soft, airbrush-like strokes, which are usually very difficult to create in vector drawing software.
 
@@ -201,7 +201,7 @@ with boundary edges. This condition makes all colors and gradients emanate from 
 
 \begin{figure}
     \centering
-        \includegraphics[width=0.4\textwidth]{images/colorarcs}
+        \includegraphics[width=0.4\textwidth]{images/colorarcs2}
     \caption{An example of color arcs. The orange lines are boundary edges. Black lines form the triangle
     mesh with the boundary edges. Each point is given a color arc which defines its color in that range.
     Note that the points in the middle row have different colors on top and bottom. This gives blue
@@ -220,11 +220,16 @@ containing either a solid color or linear gradient. A region will have a solid c
 boundaries that surround it all take on the same color. If instead a region is surrounded by
 two boundaries, one which has a given color and the other which has a transparent version of that color
 then there will be a linear gradient in that region between the two boundaries (e.g. a soft brush stroke).
+Figure~\ref{fig:softarcs} shows the color arcs on such a soft stroke.
 
 \begin{figure}
     \centering
-        \includegraphics[height=1.5in]{images/softstrokeboundaryedges}
-    \caption{Place Holder.}
+        \includegraphics[width=0.5\textwidth]{images/gradientarcs}
+    \caption{A close look at a gradient stroke. The blue edges are boundaries where
+    the points have gray color arcs as shown. The purple edges are boundaries where
+    the points have transparent gray color arcs. This gives triangles connecting the two boundaries
+    a linear gradient from gray to white.}
+    \label{fig:softarcs}
 \end{figure}
 
 \section{Triangulating Strokes}
@@ -265,53 +270,21 @@ We utilized Jonathan Shewchuk's Triangle library~\cite{XXX} to perform constrain
 on the given set of points and boundaries. The library outputs a mesh that
 approximately represents the drawn stroke.
 
-\begin{figure*}
-\centering
-\begin{subfigure}[b]{0.3\textwidth}
-  \centering
-  \includegraphics[width=.9\textwidth]{images/stroke_triangulation/hardrendered}
-  \caption{The rasterized stroke.}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}[b]{0.3\textwidth}
-  \centering
-  \includegraphics[width=.9\textwidth]{images/stroke_triangulation/hardpruned}
-  \caption{The contour of the stroke.}
-  \label{fig:sub2}
-\end{subfigure}
-\begin{subfigure}[b]{0.3\textwidth}
-  \centering
-  \includegraphics[width=.9\textwidth]{images/stroke_triangulation/hardmesh}
-  \caption{The triangulation of the contour}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{Triangulating a hard stroke.}
-\label{fig:test}
-\end{figure*}
-
-\begin{figure*}
-\centering
-\begin{subfigure}[b]{0.3\textwidth}
-  \centering
-  \includegraphics[width=.9\textwidth]{images/stroke_triangulation/softrendered}
-  \caption{The rasterized stroke.}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}[b]{0.3\textwidth}
-  \centering
-  \includegraphics[width=.9\textwidth]{images/stroke_triangulation/softpruned}
-  \caption{The contour of the stroke.}
-  \label{fig:sub2}
-\end{subfigure}
-\begin{subfigure}[b]{0.3\textwidth}
-  \centering
-  \includegraphics[width=.9\textwidth]{images/stroke_triangulation/softmesh}
-  \caption{The triangulation of the contour}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{Triangulating a soft stroke.}
-\label{fig:test}
-\end{figure*}
+\begin{figure}
+    \centering
+        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/hardrendered}
+        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/softrendered}
+        
+        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/hardpruned}
+        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/softpruned}
+        
+        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/hardmesh}
+        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/softmesh}
+    \caption{Left: A hard stroke is rasterized, the contour is found, and a triangle mesh is generated.
+             Right: A soft stroke is rasterized in two different shades of gray, two contours are found,
+             a triangle mesh is generated with a boundary separating the inner and outer parts of the stroke.}
+    \label{fig:rastertotriangles}
+\end{figure}
 
 
 % \includegraphics[height=1.5in]{images/triangulationprocess}
@@ -334,14 +307,15 @@ derived from the contours are given to Triangle and a mesh is returned. This mes
 stroke where no triangle crosses the boundary between the soft and hard regions
 of the stroke. Points on the contour of the inner stroke will have color arcs with the stroke color,
 while the points on the contour of the outer stroke will have transparent color arcs. This gives
-all triangles connecting the inner and outer strokes a linear gradient (see Figure~\ref{XXX}).
+all triangles connecting the inner and outer strokes a linear gradient (again see Figure~\ref{softarcs}).
+Figure~\ref{fig:rastertotriangles} shows the process of triangulating both hard and soft strokes.
 
-\begin{figure}
-    \centering
-        \includegraphics[height=1.5in]{images/softstroke}
-        \includegraphics[height=1.5in]{images/hardvssoft}
-    \caption{Place Holder.}
-\end{figure}
+% \begin{figure}
+%     \centering
+%         \includegraphics[height=1.5in]{images/softstroke}
+%         \includegraphics[height=1.5in]{images/hardvssoft}
+%     \caption{Place Holder.}
+% \end{figure}
 
 \section{Compositing Strokes}
 Once the stroke has been converted to triangles by the above procedure it is necessary to
@@ -360,7 +334,7 @@ divide the canvas.
 
 In the simplest approach, the points and boundaries from the new stroke are added
 to the list of points and boundaries already stored on the canvas. All of this data is given to Triangle
-to produce a new mesh. The new mesh contains all of the points of the old and new strokes. Since
+to produce a new mesh (see figure~\ref{fig:firststrokes}). The new mesh contains all of the points of the old and new strokes. Since
 all of the boundaries are stored and given to Triangle, the stroke edges are preserved. This means that
 no triangle can cross the boundary of a stroke. Without this constraint, it would be impossible to correctly color the
 triangles since they would straddle color arcs. Once a new mesh is formed the color arcs of the 
@@ -369,8 +343,12 @@ new and old points must be computed.
 
 \begin{figure}
     \centering
-        \includegraphics[height=1.5in]{images/canvastriangulation}
-    \caption{Place Holder.}
+        \includegraphics[width=.23\textwidth]{images/emptycanvas}
+        \includegraphics[width=.23\textwidth]{images/canvaswithonestroke}
+    \caption{The figure on the left shows an empty canvas with a number of points and boundaries defined along the edges
+             to provide the initial triangulation. The figure on the right shows how a stroke is composited onto
+             the empty canvas. Blue edges are boundary edges. Red edges form the triangle mesh with the blue edges.}
+    \label{fig:firststrokes}
 \end{figure}
 
 
@@ -408,13 +386,43 @@ be the first point on each side since this intersection point may be adjacent to
 points also without color data. For both boundaries, the colors in the color arcs are linearly interpolated. 
 This yields four average colors, two from the new stroke boundary and two from the old stroke boundary.
 The colors from the new stroke are composited over the colors from the old stroke to yield four new
-colors, one for each region defined by the boundary intersections. 
+colors, one for each region defined by the boundary intersections (see figure~\ref{fig:intersectioncolors}) 
+
+An example of how color arcs are determined for both intersection and regular points see figure~\ref{fig:colorarcdeterminer}.
 
 \begin{figure}
     \centering
-        \includegraphics[height=1.5in]{images/determiningcolors}
-    \caption{Place Holder.}
+        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1new}
+        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs2new}
+        
+    \caption{Left: A blue stroke is composited over a red stroke. Point A is covered
+             by the the blue stroke and point B is on top of the red stroke. Middle:
+             New color arcs are determined. Both of A's color arcs are composited
+             with the blue stroke which turns red to purple and transparent to blue. Similarly
+             both of B's color arcs are composited on top of the red stroke which turns
+             blue to purple and transparent to red. Two intersection points C and D are
+             added. Their color arcs are determined by examining neighboring points. Right: 
+             A new triangle mesh is generated to preserve boundaries. Note that triangles
+             in the intersection will be purple.}
+    \label{fig:intersectioncolors}
 \end{figure}
+
+\begin{figure*}
+    \centering
+        \includegraphics[width=.32\textwidth]{images/composite1new}
+        \includegraphics[width=.32\textwidth]{images/composite2new}
+        \includegraphics[width=.32\textwidth]{images/composite3new}
+    \caption{Left: A blue stroke is composited over a red stroke. Point A is covered
+             by the the blue stroke and point B is on top of the red stroke. Middle:
+             New color arcs are determined. Both of A's color arcs are composited
+             with the blue stroke which turns red to purple and transparent to blue. Similarly
+             both of B's color arcs are composited on top of the red stroke which turns
+             blue to purple and transparent to red. Two intersection points C and D are
+             added. Their color arcs are determined by examining neighboring points. Right: 
+             A new triangle mesh is generated to preserve boundaries. Note that triangles
+             in the intersection will be purple.}
+    \label{fig:colorarcdeterminer}
+\end{figure*}
 
 
 \subsection{Finding Modified Points}
@@ -436,14 +444,18 @@ The new triangulation combined with the old triangles give a new triangle mesh r
 
 \begin{figure}
     \centering
-        \includegraphics[height=1.5in]{images/findingmodifiedpoints}
-    \caption{Place Holder.}
+        \includegraphics[width=.5\textwidth]{images/grid}
+    \caption{An example of how TrianglePainter determines which triangles to save and which to retriangulate. Blue
+    lines represent the boundaries of old strokes, orange lines are the boundaries of the new stroke, red lines are
+    the triangles that will be reused, and purple lines define the area that needs to be retriangulated. The purple
+    lines are edges of triangles that intersect the new stroke. Since they interesect the new stroke they are no
+    longer valid and must be retriangulated. All other triangles on the canvas can be reused.}
     \label{fig:modified}
 \end{figure}
 
 
 \section{Discussion and Results}
-Paintings made with TrianglePainter can be seen in Figures~\ref{fig:face} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
+Paintings made with TrianglePainter can be seen in Figures~\ref{fig:face}, \ref{fig:rainbow}, \ref{fig:stop} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with TrianglePainter have lead to a number of observations.
 
 \subsection{Complexity}
@@ -475,11 +487,10 @@ in less complex geometry and therefore take less time.
 
 Figure~\ref{fig:numtriangles} shows the zooming case grows linearly while the non-zooming case
 appears to grow quadratically. This is expected since every new stroke has the chance to overlap
-all of the old strokes. This means each new stroke does not just add a constant amount of geometry.
-Due to intersections with previous strokes intersection points are added. This results in a linear
-increase in the amount of geometry. This results
-in a quadratic growth rate. However, in the zooming case each stroke rarely overlaps and therefore
-intersection points are rarely added. Instead the geometry increases by a constant which leads to
+all of the old strokes. Therefore each new stroke does not just add a constant amount of geometry, but 
+due to intersections with previous strokes extra intersection points are added. This results in a linear
+increase in the amount of geometry per stroke yielding a quadratic growth rate. However, in the zooming case each stroke rarely overlaps and therefore
+intersection points are rarely added. In this case the geometry increases by a constant amount per stroke which yields
 a linear growth rate.
 
 Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to render. Both
@@ -505,7 +516,7 @@ one second to process. However, on a canvas with lots of geometry a stroke that 
 that geometry can take several seconds to render. Some of this could be alleviated by a carefully optimized implementation. However, there are many calculations
 necessary for the old points affected by the new stroke and the points associated with the
 new stroke itself. Since these geometries can become arbitrarily complicated (in pathological cases), these
-calculations can take an arbitrarily long. This brings us to the final point, scalability.
+calculations can take an arbitrarily long. This brings us to the final point, simplification.
 
 \subsection{Simplification}
 No matter how good the implementation, the fact that paintings can become arbitrarily complicated as more and more strokes are added
@@ -513,7 +524,7 @@ means there must be some way to simplify the mesh. In most situations where
 many strokes overlap one another, most of the geometry is redundant. For example, when an opaque stroke is laid down on top of a complex geometry, that complex
 geometry no longer has any useful information since the outline of the opaque stroke
 completely defines it (all vertices are the same color).  Furthermore, even with translucent or feathered strokes, a large enough number of 
-composited strokes may produce complex geometry that does not add much to the visual appearance of the canvas. Some of this geometry can be reduced without noticeable changes.  To accomplish this, our proposed simplification algorithm would identify a vertex that can be removed via an edge collapse by measuring the change the collapse would cause in the image.  The change is computed as the magnitude of the color shift and the translation of a boundary.  If these deltas are below a threshold, then the collapse can proceed.  This process could be done when a stroke is added to the canvas, or continually in a background thread to avoid increasing apparent latency.  Though we have yet to implement this simplification algorithm, it is important to ensure a painter can continue iterate on a painting without the program becoming too slow.
+composited strokes may produce complex geometry that does not add much to the visual appearance of the canvas. Some of this geometry can be reduced without noticeable changes.  To accomplish this, our proposed simplification algorithm would identify a vertex that can be removed via an edge collapse by measuring the change the collapse would cause in the image.  The change is computed as the magnitude of the color shift and the translation of a boundary.  If these deltas are below a threshold, then the collapse can proceed.  This process could be done when a stroke is added to the canvas, or continually in a background thread to avoid increasing apparent latency.  Though we have yet to implement this simplification algorithm, it is important to ensure a painter can continue to iterate on a painting without the program becoming too slow.
 
 
 
@@ -553,6 +564,24 @@ composited strokes may produce complex geometry that does not add much to the vi
     \caption{Artist time ~30 minutes. 9030 triangles. \Steve{Can we add number of strokes?}}
     \label{fig:face}
 \end{figure*}
+
+\begin{figure*}
+    \centering
+        \includegraphics[width=0.49\textwidth]{images/rainbow2}
+        % \includegraphics[width=0.49\textwidth]{images/facezoomtriangles}
+    \caption{An example of soft strokes}
+    \label{fig:rainbow}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+        \includegraphics[width=0.3\textwidth]{images/stop1}
+        \includegraphics[width=0.3\textwidth]{images/stop2}
+        \includegraphics[width=0.3\textwidth]{images/stop3}
+    \caption{}
+    \label{fig:stop}
+\end{figure*}
+
 
 \begin{figure*}
     \centering
