@@ -121,16 +121,20 @@ getting the benefits of vector graphics.
 \section{Related Works}
 
 Previous work has focused on converting images into vector graphics to take advantage of the
-efficient storage, easy editing, and infinite resolution it provides. For example \cite{lecot:ARD:2006}
+efficient storage, easy editing, and infinite resolution it provides. For example the method of
+Lecot and L\'{e}vy~\shortcite{lecot:ARD:2006}
 minimizes an energy function to segment an image into a number of regions that are bounded
 by cubic splines and filled with solid colors or gradients. A different approach by \cite{Lai:2009:ATG:1531326.1531391} 
 automatically creates gradient meshes with support for holes. Yet another example is \cite{10.1109/TVCG.2012.76} 
 which converts an image into a triangle mesh. All three of these can convert images into
 a vector representation, yet none of them allow a user to create a painting in the vector medium.
 
-Other work has proposed novel vector graphic data structures. For example \cite{Frisken:2000:ASD:344779.344899}
-defines Adaptively Sampled Distance Fields (ADF). ADFs specify a signed distance function to a surface.
-Rendering the shape requires sampling the function to determine whether or not a pixel is on the surface.
+Other work has proposed novel vector graphic data structures. For example 
+Frisken~\etal~\shortcite{Frisken:2000:ASD:344779.344899}
+introduced Adaptively Sampled Distance Fields (ADFs), which specify a signed distance function to a surface in 3D
+(or a curve in the plane).
+%
+Rendering the shape requires sampling the function to determine whether or not a pixel is on the shape.
 A quadtree accompanies the distance function to specify where higher sampling rates are necessary. \cite{Bremer:2001:VCM}
 further describes how ADFs can be created and used. However, it is unclear how ADFs might be used in a general
 painting program where strokes with solid colors and gradients are composited on top of one another.
