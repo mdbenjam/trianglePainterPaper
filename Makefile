@@ -1,6 +1,6 @@
 # make -f Makefile_pdflatex
 
-R = template
+R = paper
 STY = *.cls
 FIG = images/samplefigure.pdf
 
