@@ -17,7 +17,7 @@
 \captionsetup[subfigure]{aboveskip=6pt}
 \captionsetup[subfigure]{belowskip=0pt}
 
-\TOGonlineid{45678}
+\TOGonlineid{33}
 \TOGvolume{0}
 \TOGnumber{0}
 \TOGarticleDOI{1111111.2222222}
@@ -43,7 +43,7 @@
   \includegraphics[width=\w]{images/rainbow3}
   \includegraphics[width=\w]{images/rainbow3_tri}
   \includegraphics[width=\w]{images/rainbow3_zoom3}
-  \caption{\emph{Left:} A vector painting made in TrianglePaint exhibits both smooth gradients painted by soft brushes as well as infinitely sharp boundaries painted by hard brushes. \emph{Middle:} The painting is represented by a planar triangle mesh. \emph{Right:} Closeup on the bottom of the letter B highlights both the sharp boundaries on the white region and smooth gradient from blue to green in the background.}
+  \caption{\emph{Left:} A vector painting made in the system exhibits both smooth gradients painted by soft brushes as well as infinitely sharp boundaries painted by hard brushes. \emph{Middle:} The painting is represented by a planar triangle mesh. \emph{Right:} Closeup on the bottom of the letter B highlights both the sharp boundaries on the white region and smooth gradient from blue to green in the background.}
   \label{fig:teaser}
 }
 
@@ -93,9 +93,9 @@ these geometric primitives in order to render the drawing. Although using vector
 is likely less intuitive, it has some distinct advantages including a compact
 representation, infinite resolution, and easier manipulation.
 
-In this paper we introduce TrianglePainter which  
+In this paper we introduce a system which  
 uses a different representation than traditional raster or vector graphics.
-TrianglePainter uses a triangle mesh to store the data of the painting.
+The system uses a triangle mesh to store the data of the painting.
 Since triangles are a geometric primitive used in vector graphics this approach achieves the
 same advantages traditional vector graphics have. However, the representation allows the
 user to paint with vector graphics without dealing directly with the underlying implementation.
@@ -110,13 +110,13 @@ while zoomed out and then zoom in to make fine details. All of this can happen w
 loss of quality since the data is stored using triangles instead of pixels, which can represent sharp boundaries at any orientation.  Furthermore, the use of smooth shading when rendering the triangles allows for vector representation of gradient effects.  We take advantage of this feature to create soft, airbrush-like strokes, which are difficult to create in vector drawing software.
 
 To transform a user's mouse inputs to a triangle mesh,
-TrianglePainter uses a combination of rasterization and marching squares to
+the system uses a combination of rasterization and marching squares to
 find stroke contours. From the contour it performs a Delaunay triangulation
 and then merges this triangulation
 of the new stroke with the triangle mesh of the existing canvas. This process yields
 a new canvas with the combined strokes.
 
-TrianglePainter reduces the barrier to creating vector graphics by enabling a painting-like interface, with support for sharp and smooth edges. This in turn allows 
+The system reduces the barrier to creating vector graphics by enabling a painting-like interface, with support for sharp and smooth edges. This in turn allows 
 artists to focus on the painting and not the way in which they paint, while still 
 getting the benefits of vector graphics. We demonstrate our method by creating digital paintings with a 
 range of effects and resolutions, including zoom factors of up to 500,000:1 which implies an effective 
@@ -478,8 +478,8 @@ The new triangulation combined with the old triangles give a new triangle mesh r
 
 
 \section{Discussion and Results}
-Paintings made with TrianglePainter can be seen in Figures~\ref{fig:face}, \ref{fig:teaser}, \ref{fig:stop} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
-The results from this analysis and our experience with TrianglePainter have lead to a number of observations.
+Paintings made with the system can be seen in Figures~\ref{fig:face}, \ref{fig:teaser}, \ref{fig:stop} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
+The results from this analysis and our experience with the system have lead to a number of observations.
 
 \subsection{Complexity}
 To find the growth rates of the algorithm we performed two experiments. 
@@ -516,7 +516,7 @@ While the Triangle library is impressively robust, there are still certain patho
 \begin{figure}
     \centering
         \includegraphics[width=\columnwidth]{images/grid}
-    \caption{An example of how TrianglePainter determines which triangles to save and which to retriangulate. Blue
+    \caption{An example of how the system determines which triangles to save and which to retriangulate. Blue
     lines represent the boundaries of old strokes, orange lines are the boundaries of the new stroke, red lines are
     the triangles that will be reused, and purple lines define the area that needs to be retriangulated. The purple
     lines are edges of triangles that intersect the new stroke. Since they interesect the new stroke they are no
@@ -626,8 +626,8 @@ composited strokes may produce complex geometry that does not add much to the vi
 \end{figure*}
 
 \section{Conclusion}
-TrianglePainter enables a user to paint like they would in a raster graphics program 
-to create vector graphics. The core of TrianglePainter is a triangle mesh representation of the image.
+The system enables a user to paint like they would in a raster graphics program 
+to create vector graphics. The core of the system is a triangle mesh representation of the image.
 We have created an algorithm to convert a user's mouse motions into a triangle mesh, and then composite
 that mesh on the preexisting mesh containing the previous strokes.
 
