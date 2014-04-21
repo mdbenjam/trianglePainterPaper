@@ -26,7 +26,7 @@
 \TOGdataURL{}
 \TOGcodeURL{}
 
-\title{A Triangle Mesh Approach to Painting}
+\title{Painting with Triangles}
 
 \author{Mark D. Benjamin\thanks{e-mail:mdbenjam@princeton.edu} \hspace{10 pt} Princeton Unviersity\\ Adam Finkelstein\thanks{e-mail:af@cs.princeton.edu} \hspace{10 pt} Princeton University\\ Stephen DiVerdi\thanks{e-mail:diverdi@google.com} \hspace{10 pt} Google}
 \pdfauthor{Mark D. Benjamin, Adam Finkelstein, Stephen Diverdi}
@@ -43,15 +43,17 @@
   \includegraphics[width=\w]{images/rainbow3}
   \includegraphics[width=\w]{images/rainbow3_tri}
   \includegraphics[width=\w]{images/rainbow3_zoom3}
-  \caption{A vector painting made in TrianglePaint that exhibits smooth gradients painted by soft brushes, as well as infinitely sharp boundaries painted by hard brushes, together in a single flat representation.  The triangle mesh is shown in the middle, and the right image is zoomed in on the bottom of the letter B, to show the sharp boundaries and smooth gradients in detail.}
+  \caption{\emph{Left:} A vector painting made in TrianglePaint exhibits both smooth gradients painted by soft brushes as well as infinitely sharp boundaries painted by hard brushes. \emph{Middle:} The painting is represented by a planar triangle mesh. \emph{Right:} Closeup on the bottom of the letter B highlights both the sharp boundaries on the white region and smooth gradient from blue to green in the background.}
   \label{fig:teaser}
 }
 
 \maketitle
 
 \begin{abstract}
-Although vector graphics program have a number of advantages, current vector painting programs
-do not allow an artist to use traditional painting techniques. We propose a new algorithm that translates a
+Although vector graphics offer a number of benefits, conventional vector painting programs
+do not allow an artist to use traditional (digital) painting techniques. 
+% \note{really?}
+We propose a new algorithm that translates a
 user's mouse motion into a triangle mesh representation. This triangle mesh can then be composited onto
 a canvas containing an existing mesh representation of the previous strokes. 
 This representation allows the algorithm to render solid colors and linear
@@ -103,7 +105,7 @@ vector graphics without worrying about the representation.
 
 This procedure allows painting at any scale. A user can make large strokes
 while zoomed out and then zoom in to make fine details. All of this can happen without
-loss of quality since the data is stored using triangles instead of pixels, which can represent sharp boundaries at any orientation.  Furthermore, the use of smooth shading when rendering the triangles allows for vector representation of gradient effects.  We take advantage of this feature to create soft, airbrush-like strokes, which are usually very difficult to create in vector drawing software.
+loss of quality since the data is stored using triangles instead of pixels, which can represent sharp boundaries at any orientation.  Furthermore, the use of smooth shading when rendering the triangles allows for vector representation of gradient effects.  We take advantage of this feature to create soft, airbrush-like strokes, which are difficult to create in vector drawing software.
 
 To transform a user's mouse inputs to a triangle mesh,
 TrianglePainter uses a combination of rasterization and marching squares to

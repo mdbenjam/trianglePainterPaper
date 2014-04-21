@@ -14,5 +14,8 @@ $(R).bbl: $(R).bib
 $(R).pdf: *.tex $(STY) $(FIG) $(R).bbl
 	pdflatex $(R)
 
+now:
+	pdflatex $(R)
+
 clean:
 	rm -f $(R).log $(R).aux $(R).bbl $(R).blg $(R).out
