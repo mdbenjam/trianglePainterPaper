@@ -277,14 +277,16 @@ approximately represents the drawn stroke.
 
 \begin{figure}
     \centering
-        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/hardrendered}
-        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/softrendered}
+    \setlength{\w}{0.45\columnwidth}
+
+        \includegraphics[width=\w]{images/stroke_triangulation/hardrendered}
+        \includegraphics[width=\w]{images/stroke_triangulation/softrendered}
         
-        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/hardpruned}
-        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/softpruned}
+        \includegraphics[width=\w]{images/stroke_triangulation/hardpruned}
+        \includegraphics[width=\w]{images/stroke_triangulation/softpruned}
         
-        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/hardmesh}
-        \includegraphics[width=.2\textwidth]{images/stroke_triangulation/softmesh}
+        \includegraphics[width=\w]{images/stroke_triangulation/hardmesh}
+        \includegraphics[width=\w]{images/stroke_triangulation/softmesh}
     \caption{Left: A hard stroke is rasterized, the contour is found, and a triangle mesh is generated.
              Right: A soft stroke is rasterized in two different shades of gray, two contours are found,
              a triangle mesh is generated with a boundary separating the inner and outer parts of the stroke.}
