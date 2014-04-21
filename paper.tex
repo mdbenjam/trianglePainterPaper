@@ -170,7 +170,7 @@ where the triangle mesh is created while the artists lays down strokes.
 
 \begin{figure}
     \centering
-        \includegraphics[width=0.4\textwidth]{images/colorarcs2}
+        \includegraphics[width=0.4\textwidth]{images/colorarcsfinal}
     \caption{An example of color arcs. The orange lines are boundary edges. Black lines form the triangle
     mesh with the boundary edges. Each point is given a color arc which defines its color in that range.
     Note that the points in the middle row have different colors on top and bottom. This gives blue
@@ -382,26 +382,21 @@ the old point must be determined through bilinear interpolation before compositi
 
 \begin{figure}
     \centering
-        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1new}
-        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs2new}
+        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1final}
+        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs2final}
         
-    \caption{Left: A blue stroke is composited over a red stroke. Point A is covered
-             by the the blue stroke and point B is on top of the red stroke. Middle:
-             New color arcs are determined. Both of A's color arcs are composited
-             with the blue stroke which turns red to purple and transparent to blue. Similarly
-             both of B's color arcs are composited on top of the red stroke which turns
-             blue to purple and transparent to red. Two intersection points C and D are
-             added. Their color arcs are determined by examining neighboring points. Right: 
-             A new triangle mesh is generated to preserve boundaries. Note that triangles
-             in the intersection will be purple.}
+    \caption{Left: A red stroke is composited over a blue stroke. An intersection
+            point is inserted in the center and four color arcs must be determined. Right:
+            The four colors are resolved as the four combinations of the red stroke's color
+            arcs composited over the blue stroke's color arcs.}
     \label{fig:intersectioncolors}
 \end{figure}
 
 \begin{figure*}
     \centering
-        \includegraphics[width=.32\textwidth]{images/composite1new}
-        \includegraphics[width=.32\textwidth]{images/composite2new}
-        \includegraphics[width=.32\textwidth]{images/composite3new}
+        \includegraphics[width=.32\textwidth]{images/composite21}
+        \includegraphics[width=.32\textwidth]{images/composite22}
+        \includegraphics[width=.32\textwidth]{images/composite23}
     \caption{Left: A blue stroke is composited over a red stroke. Point A is covered
              by the the blue stroke and point B is on top of the red stroke. Middle:
              New color arcs are determined. Both of A's color arcs are composited
@@ -574,9 +569,9 @@ composited strokes may produce complex geometry that does not add much to the vi
 
 \begin{figure*}
     \centering
-        \includegraphics[width=0.3\textwidth]{images/stop1}
-        \includegraphics[width=0.3\textwidth]{images/stop2}
-        \includegraphics[width=0.3\textwidth]{images/stop3}
+        \includegraphics[width=0.3\textwidth]{images/stop12}
+        \includegraphics[width=0.3\textwidth]{images/stop22}
+        \includegraphics[width=0.3\textwidth]{images/stop32}
     \caption{Another painting by an artist, using soft and hard strokes at a variety of scales.  Middle and right images are zoomed in.}
     \label{fig:stop}
 \end{figure*}
