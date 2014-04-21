@@ -289,10 +289,11 @@ Converting a user's mouse motion into a set of contours requires two steps.
 First, the user's mouse movements are captured by a set of polygons which can be
 rendered to yield a rasterized version of the stroke.
 Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{lorensen1987}
-is used to extract iso-contours of 50\% gray. This returns a very dense set of points 
+is used to extract iso-contours of 50\% gray. This returns a very dense set of points,
 which we reduce through a pruning process to
 get a sparse but accurate representation of the contour.
-
+The pruning procedure walks around the contour to form an approximating polygon $P$,
+greedily eliding vertices whenever they lie within a small threshold distance of $P$.
 
 % Adam and Steve should we talk about how anti-aliasing + marching squares can achieve sub-pixel
 % resolution?
