@@ -26,6 +26,8 @@
 \TOGdataURL{}
 \TOGcodeURL{}
 
+\setlength{\fboxsep}{0pt}
+
 \title{Painting with Triangles}
 
 \author{Mark D. Benjamin\thanks{e-mail:mdbenjam@princeton.edu} \hspace{10 pt} Princeton Unviersity\\ Adam Finkelstein\thanks{e-mail:af@cs.princeton.edu} \hspace{10 pt} Princeton University\\ Stephen DiVerdi\thanks{e-mail:diverdi@google.com} \hspace{10 pt} Google}
@@ -263,7 +265,7 @@ Figure~\ref{fig:softarcs} shows the color arcs on such a soft stroke.
 
 \begin{figure}
     \centering
-        \includegraphics[width=0.5\textwidth]{images/gradientarcs}
+        \fbox{\includegraphics[width=0.45\textwidth]{images/gradientarcs}}
     \caption{A close look at a gradient stroke. The blue edges are boundaries where
     the points have gray color arcs as shown. The purple edges are boundaries where
     the points have transparent gray color arcs. This gives triangles connecting the two boundaries
@@ -384,8 +386,8 @@ new and old points must be computed.
 
 \begin{figure}
     \centering
-        \includegraphics[width=.23\textwidth]{images/emptycanvas}
-        \includegraphics[width=.23\textwidth]{images/canvaswithonestroke}
+        \fbox{\includegraphics[width=.23\textwidth]{images/emptycanvas}}
+        \fbox{\includegraphics[width=.23\textwidth]{images/canvaswithonestroke}}
     \caption{The figure on the left shows an empty canvas with a number of points and boundaries defined along the edges
              to provide the initial triangulation. The figure on the right shows how a stroke is composited onto
              the empty canvas. Blue edges are boundary edges. Red edges form the triangle mesh with the blue edges.}
@@ -415,6 +417,7 @@ the old point must be determined through bilinear interpolation before compositi
 \begin{figure}
     \centering
         \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1final}
+        \hspace{.2in}
         \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs2final}
         
     \caption{Left: A red stroke is composited over a blue stroke. An intersection
@@ -515,7 +518,7 @@ While the Triangle library is impressively robust, there are still certain patho
 
 \begin{figure}
     \centering
-        \includegraphics[width=\columnwidth]{images/grid}
+        \fbox{\includegraphics[width=.45\textwidth]{images/grid}}
     \caption{An example of how the system determines which triangles to save and which to retriangulate. Blue
     lines represent the boundaries of old strokes, orange lines are the boundaries of the new stroke, red lines are
     the triangles that will be reused, and purple lines define the area that needs to be retriangulated. The purple
@@ -547,13 +550,15 @@ composited strokes may produce complex geometry that does not add much to the vi
   \centering
   \begin{subfigure}[b]{0.5\columnwidth}
     \centering
-    \includegraphics[width=\columnwidth]{graphs/numtriangles}
+    % \includegraphics[width=\columnwidth]{graphs/numtriangles}
+    \includegraphics[height=1.2in]{graphs/numtriangles}
     \caption{Number of triangles}
     \label{fig:numtriangles}
   \end{subfigure}%
   \begin{subfigure}[b]{0.5\columnwidth}
     \centering
-    \includegraphics[width=\columnwidth]{graphs/cumulativetime}
+    % \includegraphics[width=\columnwidth]{graphs/cumulativetime}
+    \includegraphics[height=1.2in]{graphs/cumulativetime}
     \caption{Rendering time}
     \label{fig:timing}
   \end{subfigure}%
