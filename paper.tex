@@ -199,8 +199,8 @@ where the triangle mesh is created while the artists lays down strokes.
     \centering
         \includegraphics[width=0.4\textwidth]{images/colorarcsfinal}
     \caption{Color arcs. Orange lines are boundary edges, and together with black lines form the triangle
-    mesh. Each point is given more or more color arcs, 
-    which stores the color of triangle corners in that angular range.
+    mesh. Each point is given one or more color arcs 
+    which store the color of triangle corners in that angular range.
     Points in the middle row have red arcs on top and blue below,
     yielding triangles with those colors, separated by a hard boundary.}
     \label{fig:arcs}
@@ -236,7 +236,7 @@ This partially restricts the set of valid triangulations of the points.  Figure~
         \fbox{\includegraphics[width=0.45\textwidth]{images/gradientarcs}}
     \caption{A close look at a gradient stroke. The blue edges are boundaries where
     the points have gray color arcs as shown. The purple edges are boundaries where
-    the points have transparent gray color arcs. This gives triangles connecting the two boundaries
+    the points have white color arcs. This gives triangles connecting the two boundaries
     a linear gradient from gray to white.}
     \label{fig:softarcs}
 \end{figure}
@@ -505,7 +505,7 @@ other part of the canvas. Therefore, the old triangles from the rest of the canv
 and their union with the new triangle mesh represents the new canvas.
 
 \section{Results and Discussion}
-Paintings made with our system in a range of visual styles are shown in Figures~\ref{fig:teaser} and \ref{fig:face}--\ref{fig:boxes}.  
+Paintings made with our system in a range of visual styles are shown in Figures~\ref{fig:teaser} and \ref{fig:face}--\ref{fig:stop}.  
 %
 The images shown in \fig{fig:boxes}
 reveal a drawing with an extreme zoom range up to 524,000:1, 
@@ -528,7 +528,7 @@ areas of the canvas and therefore results in less overlapping geometry. This sit
 in less complex geometry and therefore take less time.
 
 Figure~\ref{fig:numtriangles} shows the zooming case grows linearly while the non-zooming case
-appears to grow quadratically. This is expected since every new stroke has the chance to overlap
+appears to grow quadratically. This is expected since in the non-zooming case every new stroke has the chance to overlap
 all of the old strokes. Therefore each new stroke does not just add a constant amount of geometry, but 
 due to intersections with previous strokes extra intersection points are added. This results in a linear
 increase in the amount of geometry per new stroke, yielding a quadratic growth rate overall. 
@@ -571,7 +571,7 @@ one second to process. However, on a canvas with lots of geometry a stroke that 
 that geometry can take several seconds to render. Some of this could be alleviated by a carefully optimized implementation. However, there are many calculations
 necessary for the old points affected by the new stroke and the points associated with the
 new stroke itself. Since these geometries can become arbitrarily complicated (in pathological cases), these
-calculations can take an arbitrarily long.
+calculations can take arbitrarily long.
 % This brings us to the final point, simplification.
 
 \subsection{Simplification}
@@ -684,7 +684,7 @@ only needs to operate on regions of the mesh that have changed during recent pai
 \section{Conclusion and Future Work}
 Our system enables a user to paint like they would in a raster graphics program 
 to create vector graphics. The core element is a triangle mesh representation of the painting.
-We have created an algorithm to convert a user's mouse motions into a triangle mesh, and then composite that mesh on the preexisting mesh containing the previous strokes.
+We have created an algorithm to convert a user's mouse motions into a triangle mesh, and then composite it onto the preexisting mesh containing the previous strokes.
 
 Aside from the {\bf simplification} challenge described in \sect{sec:simplify}, there are a number of other interesting areas for future work, including:
 
