@@ -58,13 +58,7 @@
 \maketitle
 
 \begin{abstract}
-Although vector graphics offer a number of benefits, conventional vector painting programs
-offer only limited support for the traditional painting metaphor.
-We propose a new algorithm that translates a
-user's mouse motion into a triangle mesh representation. This triangle mesh can then be composited onto a canvas containing an existing mesh representation of earlier strokes. 
-This representation allows the algorithm to render solid colors and linear
-gradients. It also enables painting at any resolution. This paradigm allows artists to create complex, multi-scale drawings with gradients and sharp features while avoiding pixel sampling artifacts.  
-
+Although vector graphics offer a number of benefits, conventional vector painting programs offer only limited support for the traditional painting metaphor. We propose a new algorithm that translates a user's mouse motion into a triangle mesh representation. This triangle mesh can then be composited onto a canvas containing an existing mesh representation of earlier strokes. This representation allows the algorithm to render solid colors and linear gradients. It also enables painting at any resolution. This paradigm allows artists to create complex, multi-scale drawings with gradients and sharp features while avoiding pixel sampling artifacts. 
 \end{abstract}
 
 \ignorethis{
@@ -511,13 +505,14 @@ other part of the canvas. Therefore, the old triangles from the rest of the canv
 and their union with the new triangle mesh represents the new canvas.
 
 \section{Results and Discussion}
-Paintings made with our system can be seen in Figures~\ref{fig:teaser}, \ref{fig:face},  \ref{fig:stop} and \ref{fig:boxes}.  
+Paintings made with our system in a range of visual styles are shown in Figures~\ref{fig:teaser} and \ref{fig:face}--\ref{fig:boxes}.  
 %
-These figures contain drawings in a range of styles. The images shown in \fig{fig:boxes}
+The images shown in \fig{fig:boxes}
 reveal a drawing with an extreme zoom range up to 524,000:1, 
 for an effective resolution equivalent to an image with more than $10^{17}$ pixels.
-At this zoom level our render begins to reach the limits of floating point precision
-for single floats; this could be ameliorated by switching to double-precision.
+At this zoom level our renderer begins to suffer from artifacts at 
+the limits of single floating point precision; 
+this could be ameliorated by switching to double-precision.
 
 Next we  consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with the system have lead to a number of observations.
@@ -568,7 +563,8 @@ While Shewchuk's implementation~\shortcite{shewchuk2002} of Delaunay triangulati
 
 \subsection{Performance}
 The current implementation uses Python and PyOpenGL. Python's performance is slower than
-a lower level implementation in C++ would be. The drawing of the canvas is quick with
+a lower level implementation in C++ would be. The preview rasterization of a new stroke on 
+the canvas is interactive with
 no lag. However, the actual process to take a stroke from rasterization to triangle
 representation on the canvas can be slow. On a blank canvas, strokes take less than
 one second to process. However, on a canvas with lots of geometry a stroke that overlaps
@@ -645,6 +641,32 @@ only needs to operate on regions of the mesh that have changed during recent pai
 % - Switch 6.3 and 6.4
 \begin{figure*}
     \centering
+        \fbox{\includegraphics[width=0.49\textwidth]{images/facezoom}}
+        \fbox{\includegraphics[width=0.49\textwidth]{images/facezoomtriangles}}
+    \caption{This drawing uses about 70 strokes, resulting in 9030 triangles.}
+    \label{fig:face}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+        \fbox{\includegraphics[width=0.325\textwidth]{images/stop12}}
+        \fbox{\includegraphics[width=0.325\textwidth]{images/stop22}}
+        \fbox{\includegraphics[width=0.325\textwidth]{images/stop32}}
+    \caption{This painting shows soft and hard strokes at a variety of scales.  Middle and right images are zoomed in.}
+    \label{fig:stop}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+        \fbox{\includegraphics[height=0.333\textwidth]{images/apple}}
+		\hspace*{0.5in}
+        \fbox{\includegraphics[height=0.333\textwidth]{images/eye}}
+    \caption{Two more example paintings exploring different styles.}
+    \label{fig:apple-eye}
+\end{figure*}
+
+\begin{figure*}
+    \centering
         \includegraphics[width=0.195\textwidth]{images/zoom61}
         \includegraphics[width=0.195\textwidth]{images/zoom62}
         \includegraphics[width=0.195\textwidth]{images/zoom63}
@@ -655,41 +677,16 @@ only needs to operate on regions of the mesh that have changed during recent pai
         \includegraphics[width=0.195\textwidth]{images/zoom68}
         \includegraphics[width=0.195\textwidth]{images/zoom69}
         \includegraphics[width=0.195\textwidth]{images/zoom72}
-    \caption{A painting that shows extreme zoom levels.  The final image is at zoom level 524,000:1.}
+    \caption{This single painting shows an extreme zoom; the final closeup image is at zoom level 524,000:1.}
     \label{fig:boxes}
 \end{figure*}
 
-\begin{figure*}
-    \centering
-        \fbox{\includegraphics[width=0.49\textwidth]{images/facezoom}}
-        \fbox{\includegraphics[width=0.49\textwidth]{images/facezoomtriangles}}
-    \caption{A painting by an artist that took about 30 minutes, using about 70 strokes, resulting in 9,030 triangles.}
-    \label{fig:face}
-\end{figure*}
-
-\begin{figure*}
-    \centering
-        \fbox{\includegraphics[width=0.45\textwidth]{images/apple}}
-        \fbox{\includegraphics[width=0.45\textwidth]{images/eye}}
-    \caption{Two more example paintings exploring different styles.}
-    \label{fig:paintings}
-\end{figure*}
-
-\begin{figure*}
-    \centering
-        \fbox{\includegraphics[width=0.325\textwidth]{images/stop12}}
-        \fbox{\includegraphics[width=0.325\textwidth]{images/stop22}}
-        \fbox{\includegraphics[width=0.325\textwidth]{images/stop32}}
-    \caption{Another painting by an artist, using soft and hard strokes at a variety of scales.  Middle and right images are zoomed in.}
-    \label{fig:stop}
-\end{figure*}
-
-\section{Conclusion}
+\section{Conclusion and Future Work}
 Our system enables a user to paint like they would in a raster graphics program 
 to create vector graphics. The core element is a triangle mesh representation of the painting.
 We have created an algorithm to convert a user's mouse motions into a triangle mesh, and then composite that mesh on the preexisting mesh containing the previous strokes.
 
-Aside from the simplification challenge described in \sect{sec:simplify}, there are a number of other interesting areas for future work, including:
+Aside from the {\bf simplification} challenge described in \sect{sec:simplify}, there are a number of other interesting areas for future work, including:
 
 \noindent
 {\bf Curved boundaries.}
