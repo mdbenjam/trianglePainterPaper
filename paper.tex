@@ -510,8 +510,16 @@ these points and edges gives the new geometry for the modified area and has no e
 other part of the canvas. Therefore, the old triangles from the rest of the canvas can be reused,
 and their union with the new triangle mesh represents the new canvas.
 
-\section{Discussion and Results}
-Paintings made with our system can be seen in Figures~\ref{fig:teaser}, \ref{fig:face},  \ref{fig:stop} and \ref{fig:boxes}.  Here we first consider how the complexity of the algorithm grows both in time and geometry.
+\section{Results and Discussion}
+Paintings made with our system can be seen in Figures~\ref{fig:teaser}, \ref{fig:face},  \ref{fig:stop} and \ref{fig:boxes}.  
+%
+These figures contain drawings in a range of styles. The images shown in \fig{fig:boxes}
+reveal a drawing with an extreme zoom range up to 524,000:1, 
+for an effective resolution equivalent to an image with more than $10^{17}$ pixels.
+At this zoom level our render begins to reach the limits of floating point precision
+for single floats; this could be ameliorated by switching to double-precision.
+
+Next we  consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with the system have lead to a number of observations.
 
 \subsection{Complexity}
@@ -665,7 +673,7 @@ only needs to operate on regions of the mesh that have changed during recent pai
         \includegraphics[width=0.195\textwidth]{images/zoom68}
         \includegraphics[width=0.195\textwidth]{images/zoom69}
         \includegraphics[width=0.195\textwidth]{images/zoom72}
-    \caption{A painting that shows extreme zoom levels.  The final image is at zoom level 524,000:1, for an effective resolution equivalent to an image with more than $10^{17}$ pixels.}
+    \caption{A painting that shows extreme zoom levels.  The final image is at zoom level 524,000:1.}
     \label{fig:boxes}
 \end{figure*}
 
