@@ -9,15 +9,15 @@
 %%% is identical in ``template.tex'' and ``template.annotated.tex.'')
 
 % uncomment one the following two lines, first one showing pictures
-\documentclass[review]{acmsiggraph}
-%\documentclass[review,draft]{acmsiggraph}
+%\documentclass[review]{acmsiggraph}
+\documentclass[review,draft]{acmsiggraph}
 
 \usepackage{subcaption}
 \usepackage{color}
 
 % comment out this line to get figures; uncomment for fast latex
-%\usepackage[draft]{graphicx}
-\usepackage{graphicx}
+\usepackage[draft]{graphicx}
+%\usepackage{graphicx}
 
 % Reduce the space between subfigures and subfigure captions.
 \captionsetup[subfigure]{aboveskip=6pt}
@@ -568,15 +568,23 @@ one second to process. However, on a canvas with lots of geometry a stroke that 
 that geometry can take several seconds to render. Some of this could be alleviated by a carefully optimized implementation. However, there are many calculations
 necessary for the old points affected by the new stroke and the points associated with the
 new stroke itself. Since these geometries can become arbitrarily complicated (in pathological cases), these
-calculations can take an arbitrarily long. This brings us to the final point, simplification.
+calculations can take an arbitrarily long.
+% This brings us to the final point, simplification.
 
 \subsection{Simplification}
+\label{sec:simplify}
 No matter how good the implementation, the fact that paintings can become arbitrarily complicated as more and more strokes are added
 means there must be some way to simplify the mesh. In most situations where
 many strokes overlap one another, most of the geometry is redundant. For example, when an opaque stroke is laid down on top of a complex geometry, that complex
 geometry no longer has any useful information since the outline of the opaque stroke
 completely defines it (all vertices are the same color).  Furthermore, even with translucent or feathered strokes, a large enough number of 
 composited strokes may produce complex geometry that does not add much to the visual appearance of the canvas. Some of this geometry can be reduced without noticeable changes.  To accomplish this, our proposed simplification algorithm would identify a vertex that can be removed via an edge collapse by measuring the change the collapse would cause in the image.  The change is computed as the magnitude of the color shift and the translation of a boundary.  If these deltas are below a threshold, then the collapse can proceed.  This process could be done when a stroke is added to the canvas, or continually in a background thread to avoid increasing apparent latency.  Though we have yet to implement this simplification algorithm, it is important to ensure a painter can continue to iterate on a painting without the program becoming too slow.
+%
+Finally we note that Liao~\etal~\shortcite{10.1109/TVCG.2012.76} demonstrated that this kind of simplification can be effective at reducing mesh complexity, at least for natural imagery.
+%
+In their case they were working on an offline process for the entire image, whereas our
+problem needs to be interactive on mouse-up (or as a background thread) but fortunately
+only needs to operate on regions of the mesh that have changed during recent painting.
 
 \begin{figure}
   \centering
@@ -667,16 +675,21 @@ Our system enables a user to paint like they would in a raster graphics program
 to create vector graphics. The core element is a triangle mesh representation of the painting.
 We have created an algorithm to convert a user's mouse motions into a triangle mesh, and then composite that mesh on the preexisting mesh containing the previous strokes.
 
-There are a number of intersting areas for future work, including:
+Aside from the simplification challenge described in \sect{sec:simplify}, there are a number of other interesting areas for future work, including:
 
-%\noindent
-%{\bf Simplification.}
-%Our prototype implementation provides a baseline painting experience, in 
+\noindent
+{\bf Curved boundaries.}
+In our implementation, curve boundaries are represented as polylines. We believe it would be relatively straightforward to modify these boundaries to be represented by higher-order curves, 
+for example a Catmull-Rom spline passing through the vertices of the mesh. This would offer
+higher-quality paths for the same sampling rate, but would require subdividing the path at
+rendering time based on the image resolution. Today such operations can typically be 
+performed on graphics hardware with little impact on runtime performance.
 
-Future work should focus on
-implementing a simplification algorithm to allow the complexity of the drawings to grow. Other
-improvements might focus on creating interesting manipulation tools, or other operations that utilize
-the underlying triangle mesh structure to make the artists' job easier.
+\noindent
+{\bf Geometric operations.}
+Because the underlying representation is vector in nature, it should robustly support warping and
+other geometric operations. It should also be easy to provide other kinds of useful tools to the 
+artist like a ``smoothing brush'' which could locally adjust the geometry and/or the colors to soften a region. Finally, it would be interesting to offer this kind of painting interface on non-planar canvasses, for example allowing an artist to paint directly onto a manifold representing a shape in 3D.
 
 \ignorethis{
 \section*{Acknowledgments}
