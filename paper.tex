@@ -178,13 +178,18 @@ beyond what is straightforward in the traditional pixel-based painting model. Ne
 they represent a new painting metaphor for the artist, rather than a vectorized version of the conventional
 digital painting approach familiar to artists.
 
-Work has also been done in multi-resolution painting using raster graphics. The method of Berman~\etal~\shortcite{Berman:1994:MPC:192161.192181}
+Work has also been done in multi-resolution painting using raster graphics. \modified{Early work with Pad++ by Bederson and Hollan~\shortcite{Bederson:1994:PZG:192426.192435} 
+explored the possibility of having an infinite resolution canvas. However, rather than a general painting program 
+this work is focused on creating an interface builder for developers.}
+The method of Berman~\etal~\shortcite{Berman:1994:MPC:192161.192181}
 stores image information in a quadtree so that different parts of the image can have different levels of detail.
 This means the image effectively has an infinite level of detail, yet since it is stored in raster form
 there are still limitations. For example a stroke painted at coarse detail will still look blurry when
 zoomed in. The strokes are limited to the resolution they are painted at. Similarly the method of Carr and Hart~\shortcite{Carr:2004:PD:1186562.1015809}
 also allows the development of multi-resolution images using rasters, and as such suffers from the
-same limitations. Another multi-resolution approach by Perlin and Velho~\shortcite{Perlin:1995:LPP:218380.218437} uses
+same limitations. \modified{One way to reduce blurriness in raster images of sharp features is proposed by Ramanarayanan~\etal~\shortcite{ramanarayanan2004feature}. 
+By seprately storing where important boundaries are, their system can avoid excessive interpolation. However, such a method requires
+creating such a data structure with those stored boundaries.} Another multi-resolution approach by Perlin and Velho~\shortcite{Perlin:1995:LPP:218380.218437} uses
 procedural textures to avoid any fundamental limit on resolution. Although useful,
 generating procedural textures can be difficult for artists.
 
@@ -288,13 +293,15 @@ one contour describes the whole stroke. However, strokes with holes, such as a c
 figure-eight, will have more than one contour.
 Converting a user's mouse motion into a set of contours requires two steps.
 First, the user's mouse movements are captured by a set of polygons which can be
-rendered to yield a rasterized version of the stroke.
+rendered to yield a rasterized version of the stroke. \modified{This rasterization happens at the resolution of the current window. Therefore
+whatever the artist sees on the screen is the basis for the vectorization.}
 Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{lorensen1987}
 is used to extract iso-contours of 50\% gray. This returns a very dense set of points,
 which we reduce through a pruning process to
 get a sparse but accurate representation of the contour.
 The pruning procedure walks around the contour to form an approximating polygon $P$,
-greedily eliding vertices whenever they lie within a small threshold distance of $P$.
+greedily eliding vertices whenever they lie within a small threshold distance of $P$. \modified{We use
+a threshold relative to zoom of 0.5 which was determined to work well empirically.}
 
 % Adam and Steve should we talk about how anti-aliasing + marching squares can achieve sub-pixel
 % resolution?
@@ -512,7 +519,10 @@ reveal a drawing with an extreme zoom range up to 524,000:1,
 for an effective resolution equivalent to an image with more than $10^{17}$ pixels.
 At this zoom level our renderer begins to suffer from artifacts at 
 the limits of single floating point precision; 
-this could be ameliorated by switching to double-precision.
+this could be ameliorated by switching to double-precision. \modified{Traditional vector
+graphics software such as Adobe Illustrator caps zooming at a ratio of 64:1. Although this
+is not an inherent limitation, there is currently not a way to use such vector graphics programs
+to draw using a traditional painting metaphor with gradients while so zoomed in.}
 
 Next we  consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with the system have lead to a number of observations.
@@ -537,14 +547,22 @@ intersection points are rarely added. In this case the geometry increases by a c
 
 Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to render. Both
 the zooming and non-zooming cases grow non-linearly over time. However, the non-zooming case takes
-longer for the reasons described. It is not unexpected that even the zooming case grows non-linearly
+longer for the reasons described. \modified{For example, the first ten strokes in both cases take about 2 seconds
+to render. While the last ten strokes take about 20 seconds in the non-zooming case and 7 seconds in the zooming case.}
+It is not unexpected that even the zooming case grows non-linearly
 since even though the geometries involved are not becoming very complicated, the geometry of the entire
-canvas is increasing linearly and must be considered even if the entire canvas is not re-triangulated.
+canvas is increasing linearly and must be considered even if the entire canvas is not re-triangulated. 
+
+\modified{Note that all these numbers come from running the program on a 1.8 GHz Core i5 MacBook Air with 8GB of RAM and an Intel HD 4000 graphics card.}
 
 This suggests that canvas simplification is of great importance.
 The case that it is most likely to be helped is the non-zooming case with complex geometry. When lots of strokes
 overlap there is usually extra geometry that does not add much detail to the drawing. By removing
 this extra geometry the algorithm should achieve a steady growth rate.
+
+\modified{Beyond reducing the complexity of the geometry, the speed of the algorithm might be improved by
+utilizing the GPU. For example, Nehab and Hoppe~\shortcite{Nehab:2008:RRG:1409060.1409088} demonstrate an
+approach for using GPUs to speed up rending of more traditional vector graphics.}
 
 \subsection{Stability} 
 
