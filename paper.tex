@@ -304,7 +304,7 @@ which we reduce through a pruning process to
 get a sparse but accurate representation of the contour.
 The pruning procedure walks around the contour to form an approximating polygon $P$,
 greedily eliding vertices whenever they lie within a small threshold distance of $P$. \modified{We use
-a threshold relative to zoom of 0.5 which was determined to work well empirically.}
+a threshold of 0.5 pixels at the current zoom level, which works well empirically.}
 
 % Adam and Steve should we talk about how anti-aliasing + marching squares can achieve sub-pixel
 % resolution?
@@ -522,10 +522,9 @@ reveal a drawing with an extreme zoom range up to 524,000:1,
 for an effective resolution equivalent to an image with more than $10^{17}$ pixels.
 At this zoom level our renderer begins to suffer from artifacts at 
 the limits of single floating point precision; 
-this could be ameliorated by switching to double-precision. \modified{Traditional vector
-graphics software such as Adobe Illustrator caps zooming at a ratio of 64:1. Although this
-is not an inherent limitation, there is currently not a way to use such vector graphics programs
-to draw using a traditional painting metaphor with gradients while so zoomed in.}
+this could be ameliorated by switching to double-precision. \modified{This significantly exceeds the limits
+imposed by existing vector graphics software such as Adobe Illustrator, which has a maximum zoom ratio
+of 64:1.  Furthermore, our ability to make paint strokes of smooth gradients in a flat vector representation (see Figure~\ref{fig:teaser}) is unique.}
 
 Next we  consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with the system have lead to a number of observations.
@@ -551,12 +550,10 @@ intersection points are rarely added. In this case the geometry increases by a c
 Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to render. Both
 the zooming and non-zooming cases grow non-linearly over time. However, the non-zooming case takes
 longer for the reasons described. \modified{For example, the first ten strokes in both cases take about 2 seconds
-to render. While the last ten strokes take about 20 seconds in the non-zooming case and 7 seconds in the zooming case.}
+to render, while the last ten strokes take about 20 seconds in the non-zooming case and 7 seconds in the zooming case.}
 It is not unexpected that even the zooming case grows non-linearly
 since even though the geometries involved are not becoming very complicated, the geometry of the entire
 canvas is increasing linearly and must be considered even if the entire canvas is not re-triangulated. 
-
-\modified{Note that all these numbers come from running the program on a 1.8 GHz Core i5 MacBook Air with 8GB of RAM and an Intel HD 4000 graphics card.}
 
 This suggests that canvas simplification is of great importance.
 The case that it is most likely to be helped is the non-zooming case with complex geometry. When lots of strokes
@@ -564,8 +561,8 @@ overlap there is usually extra geometry that does not add much detail to the dra
 this extra geometry the algorithm should achieve a steady growth rate.
 
 \modified{Beyond reducing the complexity of the geometry, the speed of the algorithm might be improved by
-utilizing the GPU. For example, Nehab and Hoppe~\shortcite{Nehab:2008:RRG:1409060.1409088} demonstrate an
-approach for using GPUs to speed up rending of more traditional vector graphics.}
+utilizing the GPU more heavily. For example, Nehab and Hoppe~\shortcite{Nehab:2008:RRG:1409060.1409088}
+demonstrate an approach for using GPUs to speed up rending of more traditional vector graphics.}
 
 \subsection{Stability} 
 
@@ -583,7 +580,8 @@ While Shewchuk's implementation~\shortcite{shewchuk2002} of Delaunay triangulati
 \end{figure}
 
 \subsection{Performance}
-The current implementation uses Python and PyOpenGL. Python's performance is slower than
+Performance is measured on a 1.8 GHz Core i5 MacBook Air with 8GB of RAM and an Intel
+HD 4000 graphics card.  The current implementation uses Python and PyOpenGL. Python's performance is slower than
 a lower level implementation in C++ would be. The preview rasterization of a new stroke on 
 the canvas is interactive with
 no lag. However, the actual process to take a stroke from rasterization to triangle
@@ -723,10 +721,10 @@ Because the underlying representation is vector in nature, it should robustly su
 other geometric operations. It should also be easy to provide other kinds of useful tools to the 
 artist like a ``smoothing brush'' which could locally adjust the geometry and/or the colors to soften a region. Finally, it would be interesting to offer this kind of painting interface on non-planar canvasses, for example allowing an artist to paint directly onto a manifold representing a shape in 3D.
 
-\modified{
-\section*{Acknowledgments}
-Let's add something here.
-}
+%\modified{
+%\section*{Acknowledgments}
+%Let's add something here.
+%}
 
 \bibliographystyle{acmsiggraph}
 \bibliography{paper}
