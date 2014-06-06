@@ -314,7 +314,7 @@ one contour describes the whole stroke. However, strokes with holes, such as a c
 figure-eight, will have more than one contour.
 Converting a user's mouse motion into a set of contours requires two steps.
 First, the user's mouse movements are captured by a set of polygons which can be
-rendered to yield a rasterized version of the stroke. \modified{This rasterization happens at the resolution of the current window. Therefore
+rendered to yield a rasterized version of the stroke. \modified{This rasterization happens at the resolution of the current window, 1280x960. Therefore
 whatever the artist sees on the screen is the basis for the vectorization.}
 Second, to obtain the contours the stroke is rasterized in black and marching squares~\cite{lorensen1987}
 is used to extract iso-contours of 50\% gray. This returns a very dense set of points,
@@ -536,7 +536,7 @@ First, the program drew fifty random strokes without zooming.
 Next, the program drew fifty random strokes with random zoom level for each stroke.
 Geometry grows fastest when many strokes are composited on one another. When not zooming, strokes
 must cover the same area of canvas over and over. This
-results in more geometry and therefore takes longer to render. The zooming case explores different
+results in more geometry and therefore takes longer to \modified{process this new stroke}. The zooming case explores different
 areas of the canvas and therefore results in less overlapping geometry. This situation should result
 in less complex geometry and therefore take less time.
 
@@ -548,10 +548,10 @@ increase in the amount of geometry per new stroke, yielding a quadratic growth r
 However, in the zooming case each stroke rarely overlaps previous strokes, and therefore
 intersection points are rarely added. In this case the geometry increases by a constant amount per stroke, which yields a linear growth rate.
 
-Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to render. Both
+Figure~\ref{fig:timing} gives a similar result for the cumulative time strokes take to process \modified{after mouse up}. Both
 the zooming and non-zooming cases grow non-linearly over time. However, the non-zooming case takes
-longer for the reasons described. \modified{For example, the first ten strokes in both cases take about 2 seconds
-to render, while the last ten strokes take about 20 seconds in the non-zooming case and 7 seconds in the zooming case.}
+longer for the reasons described. \modified{For example, the first ten strokes in both cases take about 2 seconds each
+to process, while the last ten strokes take about 20 seconds each in the non-zooming case and 7 seconds each in the zooming case.}
 It is not unexpected that even the zooming case grows non-linearly
 since even though the geometries involved are not becoming very complicated, the geometry of the entire
 canvas is increasing linearly and must be considered even if the entire canvas is not re-triangulated. 
@@ -588,7 +588,7 @@ the canvas is interactive with
 no lag. However, the actual process to take a stroke from rasterization to triangle
 representation on the canvas can be slow. On a blank canvas, strokes take less than
 one second to process. However, on a canvas with lots of geometry a stroke that overlaps
-that geometry can take several seconds to render. Some of this could be alleviated by a carefully optimized implementation. However, there are many calculations
+that geometry can take several seconds to process. Some of this could be alleviated by a carefully optimized implementation. However, there are many calculations
 necessary for the old points affected by the new stroke and the points associated with the
 new stroke itself. Since these geometries can become arbitrarily complicated (in pathological cases), these
 calculations can take arbitrarily long.
@@ -622,10 +622,10 @@ only needs to operate on regions of the mesh that have changed during recent pai
     \centering
     % \includegraphics[width=\columnwidth]{graphs/cumulativetime}
     \includegraphics[height=1.2in]{graphs/cumulativetime}
-    \caption{Rendering time}
+    \caption{Processing time}
     \label{fig:timing}
   \end{subfigure}%
-  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative render time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
+  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative process time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
 \end{figure}
 
 
