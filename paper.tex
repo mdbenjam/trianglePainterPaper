@@ -182,8 +182,8 @@ they represent a new painting metaphor for the artist, rather than a vectorized 
 digital painting approach familiar to artists.
 
 Work has also been done in multi-resolution painting using raster graphics. \modified{Early work with Pad++ by Bederson and Hollan~\shortcite{Bederson:1994:PZG:192426.192435} 
-explored the possibility of having an infinite resolution canvas. However, rather than a general painting program 
-this work is focused on creating an interface builder for developers.}
+explored the possibility of having an infinite resolution canvas. However, rather than a painting program, 
+this work focused on creating an interface builder for developers.}
 The method of Berman~\etal~\shortcite{Berman:1994:MPC:192161.192181}
 stores image information in a quadtree so that different parts of the image can have different levels of detail.
 This means the image effectively has an infinite level of detail, yet since it is stored in raster form
@@ -522,9 +522,10 @@ reveal a drawing with an extreme zoom range up to 524,000:1,
 for an effective resolution equivalent to an image with more than $10^{17}$ pixels.
 At this zoom level our renderer begins to suffer from artifacts at 
 the limits of single floating point precision; 
-this could be ameliorated by switching to double-precision. \modified{This significantly exceeds the limits
+this could be ameliorated by switching to double-precision. 
+\modified{Nevertheless, this range far exceeds limits
 imposed by existing vector graphics software such as Adobe Illustrator, which has a maximum zoom ratio
-of 64:1.  Furthermore, our ability to make paint strokes of smooth gradients in a flat vector representation (see Figure~\ref{fig:teaser}) is unique.}
+of 64:1.  Furthermore, our ability to make paint strokes of smooth gradients in a flat vector representation (\eg, Figure~\ref{fig:teaser}) is unique.}
 
 Next we  consider how the complexity of the algorithm grows both in time and geometry.
 The results from this analysis and our experience with the system have lead to a number of observations.
