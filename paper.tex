@@ -289,6 +289,24 @@ of their stroke. This is done in two steps. First, the stroke is rasterized and 
 contour is extracted from the raster. Second, the contour is converted into points and
 boundaries and triangulated.
 
+\begin{figure}
+    \centering
+    \setlength{\w}{0.45\columnwidth}
+
+        \includegraphics[width=\w]{images/stroke_triangulation/hardrendered}
+        \includegraphics[width=\w]{images/stroke_triangulation/softrendered}
+        
+        \includegraphics[width=\w]{images/stroke_triangulation/hardpruned}
+        \includegraphics[width=\w]{images/stroke_triangulation/softpruned}
+        
+        \includegraphics[width=\w]{images/stroke_triangulation/hardmesh}
+        \includegraphics[width=\w]{images/stroke_triangulation/softmesh}
+    \caption{Left: A hard stroke is rasterized, the contour is found, and a triangle mesh is generated.
+             Right: A soft stroke is rasterized in two different shades of gray, two contours are found,
+             a triangle mesh is generated with a boundary separating the inner and outer parts of the stroke.}
+    \label{fig:rastertotriangles}
+\end{figure}
+
 \subsection{Converting Strokes to Contours}
 
 A set of contours define the outline of a stroke. For simply connected strokes, those without holes, 
@@ -312,6 +330,17 @@ a threshold of 0.5 pixels at the current zoom level, which works well empiricall
 % Note that despite the reliance on rasterization it is still possible by using
 % anti-aliasing and certain brushes to get sub-pixel resolution.
 
+\begin{figure}
+    \centering
+        \fbox{\includegraphics[width=.22\textwidth]{images/emptycanvas}}
+        \fbox{\includegraphics[width=.22\textwidth]{images/canvaswithonestroke}}
+    \caption{The figure on the left shows an empty canvas with a number of points and boundaries defined along the edges
+             to provide the initial triangulation. The figure on the right shows how a stroke is composited onto
+             the empty canvas. Blue edges are boundary edges. Red edges form the triangle mesh with the blue edges.}
+    \label{fig:firststrokes}
+\end{figure}
+
+
 \subsection{Converting Contours to Triangles}
 \label{sec:contours}
 
@@ -328,24 +357,6 @@ These boundaries will prove to be crucial when compositing a stroke onto the can
 We perform constrained Delaunay triangulation on the given set of points and boundaries using
 Shewchuk's implementation~\shortcite{shewchuk2002}, and the output is a mesh that
 approximately represents the drawn stroke.
-
-\begin{figure}
-    \centering
-    \setlength{\w}{0.45\columnwidth}
-
-        \includegraphics[width=\w]{images/stroke_triangulation/hardrendered}
-        \includegraphics[width=\w]{images/stroke_triangulation/softrendered}
-        
-        \includegraphics[width=\w]{images/stroke_triangulation/hardpruned}
-        \includegraphics[width=\w]{images/stroke_triangulation/softpruned}
-        
-        \includegraphics[width=\w]{images/stroke_triangulation/hardmesh}
-        \includegraphics[width=\w]{images/stroke_triangulation/softmesh}
-    \caption{Left: A hard stroke is rasterized, the contour is found, and a triangle mesh is generated.
-             Right: A soft stroke is rasterized in two different shades of gray, two contours are found,
-             a triangle mesh is generated with a boundary separating the inner and outer parts of the stroke.}
-    \label{fig:rastertotriangles}
-\end{figure}
 
 
 % \includegraphics[height=1.5in]{images/triangulationprocess}
@@ -387,16 +398,35 @@ triangulation is found. Second, the color arcs for the old and new points are up
 We also discuss the challenge intersecting boundaries pose for the algorithm, as well
 as a technique to reduce the number of triangles that are retriangulated on the canvas.
 
-
 \begin{figure}
     \centering
-        \fbox{\includegraphics[width=.22\textwidth]{images/emptycanvas}}
-        \fbox{\includegraphics[width=.22\textwidth]{images/canvaswithonestroke}}
-    \caption{The figure on the left shows an empty canvas with a number of points and boundaries defined along the edges
-             to provide the initial triangulation. The figure on the right shows how a stroke is composited onto
-             the empty canvas. Blue edges are boundary edges. Red edges form the triangle mesh with the blue edges.}
-    \label{fig:firststrokes}
+        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1final}
+        \hspace{.2in}
+        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs2final}
+        
+    \caption{Left: A red stroke is composited over a blue stroke. An intersection
+            point is inserted in the center and four color arcs must be determined. Right:
+            The four colors are resolved as the four combinations of the red stroke's color
+            arcs composited over the blue stroke's color arcs.}
+    \label{fig:intersectioncolors}
 \end{figure}
+
+\begin{figure*}
+    \centering
+        \includegraphics[width=.32\textwidth]{images/composite21}
+        \includegraphics[width=.32\textwidth]{images/composite22}
+        \includegraphics[width=.32\textwidth]{images/composite23}
+    \caption{Left: A blue stroke is composited over a red stroke. Point A is covered
+             by the the blue stroke and point B is on top of the red stroke. Middle:
+             New color arcs are determined. Both of A's color arcs are composited
+             with the blue stroke which turns red to purple and transparent to blue. Similarly
+             both of B's color arcs are composited on top of the red stroke which turns
+             blue to purple and transparent to red. Two intersection points C and D are
+             added. Their color arcs are determined by examining neighboring points. Right: 
+             A new triangle mesh is generated to preserve boundaries. Note that triangles
+             in the intersection will be purple.}
+    \label{fig:colorarcdeterminer}
+\end{figure*}
 
 
 \subsection{Adding Points to the Canvas}
@@ -439,36 +469,6 @@ The color arcs for old points remain unchanged, unless part of the new stroke co
 In this case the colors in each arc must be replaced with the stroke color composited over
 the old color of the arc. If the new stroke is soft then the color at the location of
 the old point must be determined through bilinear interpolation before compositing.
-
-\begin{figure}
-    \centering
-        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs1final}
-        \hspace{.2in}
-        \includegraphics[width=.2\textwidth]{images/intersectioncolorarcs2final}
-        
-    \caption{Left: A red stroke is composited over a blue stroke. An intersection
-            point is inserted in the center and four color arcs must be determined. Right:
-            The four colors are resolved as the four combinations of the red stroke's color
-            arcs composited over the blue stroke's color arcs.}
-    \label{fig:intersectioncolors}
-\end{figure}
-
-\begin{figure*}
-    \centering
-        \includegraphics[width=.32\textwidth]{images/composite21}
-        \includegraphics[width=.32\textwidth]{images/composite22}
-        \includegraphics[width=.32\textwidth]{images/composite23}
-    \caption{Left: A blue stroke is composited over a red stroke. Point A is covered
-             by the the blue stroke and point B is on top of the red stroke. Middle:
-             New color arcs are determined. Both of A's color arcs are composited
-             with the blue stroke which turns red to purple and transparent to blue. Similarly
-             both of B's color arcs are composited on top of the red stroke which turns
-             blue to purple and transparent to red. Two intersection points C and D are
-             added. Their color arcs are determined by examining neighboring points. Right: 
-             A new triangle mesh is generated to preserve boundaries. Note that triangles
-             in the intersection will be purple.}
-    \label{fig:colorarcdeterminer}
-\end{figure*}
 
 \subsection{Intersection Points}
 
