@@ -536,7 +536,7 @@ First, the program drew fifty random strokes without zooming.
 Next, the program drew fifty random strokes with random zoom level for each stroke.
 Geometry grows fastest when many strokes are composited on one another. When not zooming, strokes
 must cover the same area of canvas over and over. This
-results in more geometry and therefore takes longer to \modified{process this new stroke}. The zooming case explores different
+results in more geometry and therefore takes longer to \modified{process}. The zooming case explores different
 areas of the canvas and therefore results in less overlapping geometry. This situation should result
 in less complex geometry and therefore take less time.
 
@@ -625,7 +625,7 @@ only needs to operate on regions of the mesh that have changed during recent pai
     \caption{Processing time}
     \label{fig:timing}
   \end{subfigure}%
-  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative process time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
+  \caption{For paintings of 50 random strokes, the left graph shows the number of triangles in the canvas as of stroke $x$, and the right graph shows the cumulative processing time of the painting. The blue points are the non-zooming case, while the red points are the zooming case.}
 \end{figure}
 
 
